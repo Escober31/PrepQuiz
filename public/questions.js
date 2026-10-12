@@ -330,6 +330,136 @@ const QUESTION_BANK = [
     ],
     correctAnswer: "x = 4",
     explanation: "Using logarithm product rule: log₂(x(x - 2)) = 3. In exponential form: x(x - 2) = 2³ = 8, which rearranges to x² - 2x - 8 = 0. Factoring gives (x - 4)(x + 2) = 0. Because logarithmic arguments must be positive (x > 2), the only real solution is x = 4."
+  },
+
+  // --------------------------------------------------------------------------
+  // CATEGORY: History
+  // --------------------------------------------------------------------------
+  {
+    id: "hist-1",
+    category: "History",
+    difficulty: "Easy",
+    question: "Which ancient civilization constructed the Great Pyramids of Giza along the Nile River?",
+    options: [
+      "Ancient Egyptians",
+      "Mesopotamians",
+      "Ancient Greeks",
+      "Indus Valley Civilization"
+    ],
+    correctAnswer: "Ancient Egyptians",
+    explanation: "The Great Pyramids of Giza were built during the Fourth Dynasty of the Old Kingdom in Ancient Egypt (circa 2580–2560 BCE) as monumental royal tombs for pharaohs such as Khufu."
+  },
+  {
+    id: "hist-2",
+    category: "History",
+    difficulty: "Easy",
+    question: "In which year did World War II officially conclude following the surrender of Axis forces?",
+    options: [
+      "1945",
+      "1939",
+      "1918",
+      "1950"
+    ],
+    correctAnswer: "1945",
+    explanation: "World War II officially concluded in 1945 after the surrender of Germany in May (V-E Day) and Japan in September (V-J Day) aboard the USS Missouri."
+  },
+  {
+    id: "hist-3",
+    category: "History",
+    difficulty: "Easy",
+    question: "The historic Magna Carta, which limited royal authority and laid foundations for modern constitutional law, was signed in 1215 by which English king?",
+    options: [
+      "King John",
+      "King Henry VIII",
+      "King Richard the Lionheart",
+      "King George III"
+    ],
+    correctAnswer: "King John",
+    explanation: "King John of England was forced by rebel barons to agree to the Magna Carta at Runnymede in June 1215, legally affirming that sovereign rulers are subject to the rule of law."
+  },
+  {
+    id: "hist-4",
+    category: "History",
+    difficulty: "Medium",
+    question: "Who introduced movable mechanical type printing to Europe in the 1440s, igniting the Printing Revolution?",
+    options: [
+      "Johannes Gutenberg",
+      "Leonardo da Vinci",
+      "Galileo Galilei",
+      "Desiderius Erasmus"
+    ],
+    correctAnswer: "Johannes Gutenberg",
+    explanation: "German inventor Johannes Gutenberg developed the movable-type printing press around 1440 in Mainz, Germany. This revolutionized mass communication, literacy, and the rapid dissemination of scientific ideas."
+  },
+  {
+    id: "hist-5",
+    category: "History",
+    difficulty: "Medium",
+    question: "Who became the first official Emperor of the Roman Empire in 27 BCE following the collapse of the Roman Republic?",
+    options: [
+      "Augustus (Octavian)",
+      "Julius Caesar",
+      "Nero",
+      "Marcus Aurelius"
+    ],
+    correctAnswer: "Augustus (Octavian)",
+    explanation: "Augustus (born Gaius Octavius) established the Roman Empire in 27 BCE as its first emperor, initiating two centuries of imperial stability known as the Pax Romana."
+  },
+  {
+    id: "hist-6",
+    category: "History",
+    difficulty: "Medium",
+    question: "What was the name of the first human-made satellite launched into orbit by the Soviet Union in October 1957, triggering the Space Race?",
+    options: [
+      "Sputnik 1",
+      "Vostok 1",
+      "Explorer 1",
+      "Apollo 11"
+    ],
+    correctAnswer: "Sputnik 1",
+    explanation: "The Soviet Union launched Sputnik 1 on October 4, 1957. The beach-ball-sized satellite successfully transmitted radio pulses back to Earth, marking the dawn of the Space Age."
+  },
+  {
+    id: "hist-7",
+    category: "History",
+    difficulty: "Hard",
+    question: "Which series of 1648 peace treaties ended the Thirty Years' War and established the modern doctrine of sovereign nation-states?",
+    options: [
+      "Peace of Westphalia",
+      "Treaty of Versailles",
+      "Congress of Vienna",
+      "Treaty of Utrecht"
+    ],
+    correctAnswer: "Peace of Westphalia",
+    explanation: "The Peace of Westphalia (1648) concluded the devastating European Thirty Years' War. It established 'Westphalian sovereignty,' the foundational international law concept that each nation-state has sovereignty over its territory and domestic affairs without external interference."
+  },
+  {
+    id: "hist-8",
+    category: "History",
+    difficulty: "Hard",
+    question: "Which iconic event on July 14, 1789, is celebrated as the spark and symbolic start of the French Revolution?",
+    options: [
+      "The Storming of the Bastille",
+      "The Reign of Terror",
+      "The Execution of King Louis XVI",
+      "The Tennis Court Oath"
+    ],
+    correctAnswer: "The Storming of the Bastille",
+    explanation: "On July 14, 1789, Parisian revolutionaries attacked the medieval royal fortress and armory known as the Bastille, marking a decisive uprising against royal despotism."
+  },
+  {
+    id: "hist-9",
+    category: "History",
+    difficulty: "Hard",
+    question: "Which Scottish philosopher and economist published 'The Wealth of Nations' in 1776, outlining the principles of free-market capitalism?",
+    options: [
+      "Adam Smith",
+      "David Ricardo",
+      "John Locke",
+      "Karl Marx"
+    ],
+    correctAnswer: "Adam Smith",
+    explanation: "Adam Smith published 'An Inquiry into the Nature and Causes of the Wealth of Nations' in 1776, formulating foundational economic doctrines including the division of labor and the 'invisible hand' of market competition."
   }
 ];
 
