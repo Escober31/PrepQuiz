@@ -460,6 +460,136 @@ const QUESTION_BANK = [
     ],
     correctAnswer: "Adam Smith",
     explanation: "Adam Smith published 'An Inquiry into the Nature and Causes of the Wealth of Nations' in 1776, formulating foundational economic doctrines including the division of labor and the 'invisible hand' of market competition."
+  },
+
+  // --------------------------------------------------------------------------
+  // CATEGORY: Programming
+  // --------------------------------------------------------------------------
+  {
+    id: "prog-1",
+    category: "Programming",
+    difficulty: "Easy",
+    question: "Which primitive data type is used in programming languages to represent logical values that can only be either true or false?",
+    options: [
+      "Boolean",
+      "Integer",
+      "String",
+      "Array"
+    ],
+    correctAnswer: "Boolean",
+    explanation: "A Boolean data type represents one of two possible truth values: true or false, named after mathematician George Boole who defined an algebraic system of logic."
+  },
+  {
+    id: "prog-2",
+    category: "Programming",
+    difficulty: "Easy",
+    question: "In modern JavaScript (ES6+), which declaration keyword creates a block-scoped variable that cannot be reassigned?",
+    options: [
+      "const",
+      "let",
+      "var",
+      "static"
+    ],
+    correctAnswer: "const",
+    explanation: "The 'const' keyword declares a block-scoped identifier whose binding cannot be reassigned. Note that for complex values like objects and arrays, the properties or elements may still be mutated."
+  },
+  {
+    id: "prog-3",
+    category: "Programming",
+    difficulty: "Easy",
+    question: "Which loop structure is conventionally preferred when the exact number of iterations is known before entering the loop?",
+    options: [
+      "for loop",
+      "while loop",
+      "do-while loop",
+      "infinite loop"
+    ],
+    correctAnswer: "for loop",
+    explanation: "A 'for loop' explicitly bundles initialization, condition checking, and step incrementation in its header, making it ideal for iterating over fixed ranges or array indices."
+  },
+  {
+    id: "prog-4",
+    category: "Programming",
+    difficulty: "Medium",
+    question: "Which fundamental data structure operates strictly on a Last-In, First-Out (LIFO) operational order?",
+    options: [
+      "Stack",
+      "Queue",
+      "Linked List",
+      "Hash Map"
+    ],
+    correctAnswer: "Stack",
+    explanation: "A Stack follows the LIFO (Last-In, First-Out) principle, where the most recently added element (pushed) is the first element to be removed (popped), analogous to a stack of dinner plates."
+  },
+  {
+    id: "prog-5",
+    category: "Programming",
+    difficulty: "Medium",
+    question: "What is the average time complexity for searching, insertion, and deletion in a balanced Binary Search Tree (such as an AVL or Red-Black Tree)?",
+    options: [
+      "O(log n)",
+      "O(n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    correctAnswer: "O(log n)",
+    explanation: "In a balanced BST with height h = log₂(n), each comparison discards roughly half of the remaining subtrees at each step, yielding an average and worst-case time complexity of O(log n)."
+  },
+  {
+    id: "prog-6",
+    category: "Programming",
+    difficulty: "Medium",
+    question: "Which core Object-Oriented Programming (OOP) pillar allows a derived class to acquire properties and methods from an existing base class?",
+    options: [
+      "Inheritance",
+      "Encapsulation",
+      "Polymorphism",
+      "Abstraction"
+    ],
+    correctAnswer: "Inheritance",
+    explanation: "Inheritance is the OOP mechanism enabling a subclass (child) to inherit fields, attributes, and behaviors from a superclass (parent), promoting clean code reuse and modularity."
+  },
+  {
+    id: "prog-7",
+    category: "Programming",
+    difficulty: "Hard",
+    question: "In systems programming (e.g., C or C++), what condition occurs when memory allocated on the heap is no longer needed or referenced, but is never released back to the operating system?",
+    options: [
+      "Memory leak",
+      "Buffer overflow",
+      "Segmentation fault",
+      "Deadlock"
+    ],
+    correctAnswer: "Memory leak",
+    explanation: "A memory leak happens when dynamically allocated memory on the heap is orphaned without calling free() or delete, causing the application to consume progressively more system RAM over time."
+  },
+  {
+    id: "prog-8",
+    category: "Programming",
+    difficulty: "Hard",
+    question: "In the JavaScript runtime architecture, what mechanism is responsible for checking if the Call Stack is empty and pushing queued callbacks from the Microtask and Task Queues into execution?",
+    options: [
+      "The Event Loop",
+      "The Garbage Collector",
+      "The JIT Compiler",
+      "The Thread Pool"
+    ],
+    correctAnswer: "The Event Loop",
+    explanation: "The Event Loop continuously inspects the Call Stack. When the Call Stack is clear of running execution contexts, it dequeues pending microtasks (e.g. Promises) and macrotasks (e.g. setTimeout) onto the stack for execution."
+  },
+  {
+    id: "prog-9",
+    category: "Programming",
+    difficulty: "Hard",
+    question: "Which algorithmic design paradigm solves complex optimization problems by breaking them down into overlapping subproblems and caching previously computed results (via memoization or tabulation)?",
+    options: [
+      "Dynamic Programming",
+      "Greedy Algorithm",
+      "Divide and Conquer",
+      "Backtracking"
+    ],
+    correctAnswer: "Dynamic Programming",
+    explanation: "Dynamic Programming (DP) is applied to problems exhibiting optimal substructure and overlapping subproblems, avoiding exponential re-computations by storing answers to smaller subproblems in a lookup table."
   }
 ];
 
