@@ -1,6 +1,6 @@
 /**
  * PrepQuiz - Interactive Student Exam Practice Portal
- * Core Client-Side Application Logic
+ * Core Client-Side Application Logic with Gamification Engine (XP, Streaks & Achievements)
  * Pure Vanilla JavaScript (No backend required)
  */
 
@@ -69,11 +69,230 @@
       this.playTone(554.37, "sine", 0.1, 0.09);
       this.playTone(659.25, "sine", 0.15, 0.18);
       this.playTone(880, "sine", 0.35, 0.27);
+    },
+
+    levelUp() {
+      this.playTone(440, "sine", 0.1, 0);
+      this.playTone(554.37, "sine", 0.1, 0.08);
+      this.playTone(659.25, "sine", 0.1, 0.16);
+      this.playTone(880, "sine", 0.3, 0.24);
+    },
+
+    achievement() {
+      this.playTone(587.33, "sine", 0.12, 0);
+      this.playTone(739.99, "sine", 0.12, 0.1);
+      this.playTone(880.00, "sine", 0.15, 0.2);
+      this.playTone(1174.66, "sine", 0.35, 0.3);
     }
   };
 
   // ==========================================================================
-  // 2. Application State
+  // 2. Gamification Engine (XP, Levels, Streaks & Achievements)
+  // ==========================================================================
+  const LEVEL_TIERS = [
+    { level: 1, title: "Novice Scholar", minXP: 0, maxXP: 100 },
+    { level: 2, title: "Apprentice Thinker", minXP: 100, maxXP: 250 },
+    { level: 3, title: "Knowledge Seeker", minXP: 250, maxXP: 450 },
+    { level: 4, title: "Master Student", minXP: 450, maxXP: 700 },
+    { level: 5, title: "Academic Pro", minXP: 700, maxXP: 1000 },
+    { level: 6, title: "Quiz Grandmaster", minXP: 1000, maxXP: 999999 }
+  ];
+
+  const ACHIEVEMENTS_CATALOG = [
+    { id: "first_quiz", title: "First Step", desc: "Complete your first practice quiz", icon: "🌟", reward: 50 },
+    { id: "streak_3", title: "Hot Streak", desc: "Answer 3 questions correctly in a row", icon: "🔥", reward: 30 },
+    { id: "streak_5", title: "Sharpshooter", desc: "Answer 5 questions correctly in a row", icon: "🎯", reward: 60 },
+    { id: "speed_demon", title: "Speed Demon", desc: "Answer any question correctly in under 5 seconds", icon: "⚡", reward: 40 },
+    { id: "perfect_score", title: "Flawless Victory", desc: "Score 100% on a practice quiz", icon: "💯", reward: 100 },
+    { id: "polymath", title: "Renaissance Scholar", desc: "Complete quizzes in at least 3 distinct subjects", icon: "🌐", reward: 75 },
+    { id: "tactician", title: "Strategic Review", desc: "Flag a question and complete your quiz", icon: "⚑", reward: 35 },
+    { id: "level_up", title: "Rising Star", desc: "Reach Level 2 in your study progression", icon: "🏆", reward: 50 }
+  ];
+
+  const Gamification = {
+    STORAGE_KEY: "prepmaster_gamification_v1",
+
+    state: {
+      totalXP: 0,
+      dailyStreak: 1,
+      lastActiveDate: null,
+      bestInQuizStreak: 0,
+      quizzesCompleted: 0,
+      subjectsPracticed: [],
+      unlockedAchievements: {} // { [id]: unlockDateString }
+    },
+
+    // Session-specific tracking
+    currentInQuizStreak: 0,
+    sessionTotalXPGained: 0,
+    sessionXPBreakdown: [],
+    questionStartTime: 0,
+    newlyUnlockedThisQuiz: [],
+
+    load() {
+      try {
+        const saved = localStorage.getItem(this.STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          this.state = Object.assign(this.state, parsed);
+        }
+      } catch (err) {
+        console.warn("Could not load gamification state:", err);
+      }
+      this.updateDailyStreak();
+      this.save();
+      this.updateUI();
+    },
+
+    save() {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
+      } catch (err) {
+        console.warn("Could not save gamification state:", err);
+      }
+    },
+
+    updateDailyStreak() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (!this.state.lastActiveDate) {
+        this.state.lastActiveDate = today;
+        this.state.dailyStreak = 1;
+        return;
+      }
+
+      if (this.state.lastActiveDate === today) {
+        // Already active today
+        return;
+      }
+
+      const lastDate = new Date(this.state.lastActiveDate);
+      const currentDate = new Date(today);
+      const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        this.state.dailyStreak += 1;
+      } else if (diffDays > 1) {
+        this.state.dailyStreak = 1;
+      }
+      this.state.lastActiveDate = today;
+    },
+
+    getLevelInfo(xp = this.state.totalXP) {
+      let currentTier = LEVEL_TIERS[0];
+      for (const tier of LEVEL_TIERS) {
+        if (xp >= tier.minXP) {
+          currentTier = tier;
+        } else {
+          break;
+        }
+      }
+
+      const nextTier = LEVEL_TIERS.find(t => t.level === currentTier.level + 1) || currentTier;
+      const range = nextTier.minXP - currentTier.minXP;
+      const progressInTier = Math.max(0, xp - currentTier.minXP);
+      const percent = currentTier.level === 6 ? 100 : Math.min(100, Math.round((progressInTier / (range || 1)) * 100));
+
+      return {
+        level: currentTier.level,
+        title: currentTier.title,
+        currentXP: xp,
+        nextLevelXP: nextTier.minXP,
+        percent: percent
+      };
+    },
+
+    addXP(amount, reason = "Practice") {
+      const oldLevelInfo = this.getLevelInfo();
+      this.state.totalXP += amount;
+      this.sessionTotalXPGained += amount;
+      this.sessionXPBreakdown.push({ label: reason, amount });
+
+      const newLevelInfo = this.getLevelInfo();
+      if (newLevelInfo.level > oldLevelInfo.level) {
+        SoundEngine.levelUp();
+        showToast(`🎉 Level Up! You reached Level ${newLevelInfo.level}: ${newLevelInfo.title}!`, "🏆");
+        this.unlockAchievement("level_up");
+      }
+
+      this.save();
+      this.updateUI();
+    },
+
+    unlockAchievement(id) {
+      if (this.state.unlockedAchievements[id]) return; // Already unlocked
+
+      const item = ACHIEVEMENTS_CATALOG.find(a => a.id === id);
+      if (!item) return;
+
+      this.state.unlockedAchievements[id] = new Date().toISOString();
+      this.newlyUnlockedThisQuiz.push(item);
+
+      // Award achievement XP
+      this.addXP(item.reward, `Achievement: ${item.title}`);
+      SoundEngine.achievement();
+      showToast(`🏆 Achievement Unlocked: ${item.title} (+${item.reward} XP)!`, item.icon);
+
+      this.save();
+      this.updateUI();
+    },
+
+    updateUI() {
+      const info = this.getLevelInfo();
+      const unlockedCount = Object.keys(this.state.unlockedAchievements).length;
+
+      // Header pills
+      if (dom.headerXpVal) dom.headerXpVal.textContent = this.state.totalXP;
+      if (dom.headerStreakVal) dom.headerStreakVal.textContent = this.state.dailyStreak;
+
+      // Home Screen Hub
+      if (dom.hubLevelBadge) dom.hubLevelBadge.textContent = `Level ${info.level}`;
+      if (dom.hubLevelTitle) dom.hubLevelTitle.textContent = info.title;
+      if (dom.hubXpProgressText) {
+        dom.hubXpProgressText.textContent = info.level === 6 
+          ? `${this.state.totalXP} XP (Max Level)` 
+          : `${info.currentXP} / ${info.nextLevelXP} XP to Level ${info.level + 1}`;
+      }
+      if (dom.hubXpFill) dom.hubXpFill.style.width = `${info.percent}%`;
+      if (dom.hubDailyStreak) dom.hubDailyStreak.textContent = `${this.state.dailyStreak} Day${this.state.dailyStreak > 1 ? "s" : ""}`;
+      if (dom.hubTotalXp) dom.hubTotalXp.textContent = `${this.state.totalXP} XP`;
+      if (dom.hubBestStreak) dom.hubBestStreak.textContent = this.state.bestInQuizStreak;
+      if (dom.hubAchievementsCount) dom.hubAchievementsCount.textContent = `${unlockedCount}/${ACHIEVEMENTS_CATALOG.length}`;
+      if (dom.modalAchievementsUnlockedCount) dom.modalAchievementsUnlockedCount.textContent = unlockedCount;
+    },
+
+    renderAchievementsModal() {
+      if (!dom.achievementsListModal) return;
+      dom.achievementsListModal.innerHTML = "";
+
+      ACHIEVEMENTS_CATALOG.forEach(ach => {
+        const isUnlocked = Boolean(this.state.unlockedAchievements[ach.id]);
+        const card = document.createElement("div");
+        card.className = `achievement-card ${isUnlocked ? "unlocked" : "locked"}`;
+
+        let statusText = isUnlocked 
+          ? `✓ Unlocked • +${ach.reward} XP` 
+          : `🔒 Locked • Reward: +${ach.reward} XP`;
+
+        card.innerHTML = `
+          <div class="achieve-icon-box">${ach.icon}</div>
+          <div class="achieve-info">
+            <div class="achieve-title">
+              ${ach.title}
+              ${isUnlocked ? '<span style="font-size: 0.75rem; color: #10b981; font-weight: 800;">✓</span>' : ''}
+            </div>
+            <div class="achieve-desc">${ach.desc}</div>
+            <div class="achieve-meta">${statusText}</div>
+          </div>
+          <div class="achieve-reward-badge">+${ach.reward} XP</div>
+        `;
+
+        dom.achievementsListModal.appendChild(card);
+      });
+    }
+  };
+
+  // ==========================================================================
+  // 3. Application State
   // ==========================================================================
   const state = {
     // Configuration
@@ -101,7 +320,7 @@
   };
 
   // ==========================================================================
-  // 3. DOM Element References
+  // 4. DOM Element References
   // ==========================================================================
   const dom = {
     // Views
@@ -110,12 +329,28 @@
     resultsView: document.getElementById("results-view"),
 
     // Header & Global
+    headerXpBadge: document.getElementById("header-xp-badge"),
+    headerXpVal: document.getElementById("header-xp-val"),
+    headerStreakBadge: document.getElementById("header-streak-badge"),
+    headerStreakVal: document.getElementById("header-streak-val"),
+    headerAchievementsBtn: document.getElementById("header-achievements-btn"),
     soundToggleBtn: document.getElementById("sound-toggle-btn"),
     headerHomeBtn: document.getElementById("header-home-btn"),
     brandHomeLink: document.getElementById("brand-home-link"),
     toast: document.getElementById("toast"),
     toastText: document.getElementById("toast-text"),
     toastIcon: document.getElementById("toast-icon"),
+
+    // Home Gamification Hub
+    hubLevelBadge: document.getElementById("hub-level-badge"),
+    hubLevelTitle: document.getElementById("hub-level-title"),
+    hubXpProgressText: document.getElementById("hub-xp-progress-text"),
+    hubXpFill: document.getElementById("hub-xp-fill"),
+    hubDailyStreak: document.getElementById("hub-daily-streak"),
+    hubTotalXp: document.getElementById("hub-total-xp"),
+    hubBestStreak: document.getElementById("hub-best-streak"),
+    hubAchievementsCount: document.getElementById("hub-achievements-count"),
+    hubViewAchievementsBtn: document.getElementById("hub-view-achievements-btn"),
 
     // Home Setup
     quizConfigForm: document.getElementById("quiz-config-form"),
@@ -131,6 +366,8 @@
     // Active Quiz
     quizCategoryBadge: document.getElementById("quiz-category-badge"),
     quizDifficultyBadge: document.getElementById("quiz-difficulty-badge"),
+    quizStreakWidget: document.getElementById("quiz-streak-widget"),
+    quizStreakCount: document.getElementById("quiz-streak-count"),
     timerWidget: document.getElementById("timer-widget"),
     timerDisplay: document.getElementById("timer-display"),
     timerTypeLabel: document.getElementById("timer-type-label"),
@@ -141,6 +378,7 @@
     progressBarFill: document.getElementById("progress-bar-fill"),
     questionNavGrid: document.getElementById("question-nav-grid"),
 
+    floatingXpContainer: document.getElementById("floating-xp-container"),
     questionNumTag: document.getElementById("question-num-tag"),
     questionText: document.getElementById("question-text"),
     flagBtn: document.getElementById("flag-btn"),
@@ -155,7 +393,7 @@
     nextBtn: document.getElementById("next-btn"),
     submitQuizBtn: document.getElementById("submit-quiz-btn"),
 
-    // Results
+    // Results Screen
     resultsIcon: document.getElementById("results-icon"),
     resultsHeading: document.getElementById("results-heading"),
     resultsSubheading: document.getElementById("results-subheading"),
@@ -165,6 +403,14 @@
     statWrong: document.getElementById("stat-wrong"),
     statSkipped: document.getElementById("stat-skipped"),
     statTime: document.getElementById("stat-time"),
+
+    // Rewards & Gamification on Results
+    resultsRewardsCard: document.getElementById("results-rewards-card"),
+    resultsTotalXpGained: document.getElementById("results-total-xp-gained"),
+    resultsRewardsBreakdown: document.getElementById("results-rewards-breakdown"),
+    resultsNewAchievementsContainer: document.getElementById("results-new-achievements-container"),
+    resultsNewAchievementsList: document.getElementById("results-new-achievements-list"),
+
     retakeQuizBtn: document.getElementById("retake-quiz-btn"),
     changeTopicBtn: document.getElementById("change-topic-btn"),
     reviewListContainer: document.getElementById("review-list-container"),
@@ -174,7 +420,13 @@
     countIncorrect: document.getElementById("count-incorrect"),
     countFlagged: document.getElementById("count-flagged"),
 
-    // Modal
+    // Achievements Modal
+    achievementsModal: document.getElementById("achievements-modal"),
+    achievementsModalCloseBtn: document.getElementById("achievements-modal-close-btn"),
+    modalAchievementsUnlockedCount: document.getElementById("modal-achievements-unlocked-count"),
+    achievementsListModal: document.getElementById("achievements-list-modal"),
+
+    // Confirm Modal
     confirmModal: document.getElementById("confirm-modal"),
     modalTitle: document.getElementById("modal-title"),
     modalBody: document.getElementById("modal-body"),
@@ -183,7 +435,7 @@
   };
 
   // ==========================================================================
-  // 4. Utility Functions (Fisher-Yates Shuffle & Formatting)
+  // 5. Utility Functions (Fisher-Yates Shuffle & Formatting)
   // ==========================================================================
   function shuffleArray(array) {
     const copy = [...array];
@@ -208,7 +460,19 @@
     dom.toast.classList.add("show");
     toastTimeout = setTimeout(() => {
       dom.toast.classList.remove("show");
-    }, 3200);
+    }, 3500);
+  }
+
+  function showFloatingXP(text) {
+    if (!dom.floatingXpContainer) return;
+    const badge = document.createElement("div");
+    badge.className = "floating-xp-item";
+    badge.textContent = text;
+    dom.floatingXpContainer.appendChild(badge);
+
+    setTimeout(() => {
+      if (badge.parentNode) badge.parentNode.removeChild(badge);
+    }, 1300);
   }
 
   function switchView(viewName) {
@@ -216,9 +480,14 @@
     dom.quizView.classList.remove("active");
     dom.resultsView.classList.remove("active");
 
-    if (viewName === "home") dom.homeView.classList.add("active");
-    else if (viewName === "quiz") dom.quizView.classList.add("active");
-    else if (viewName === "results") dom.resultsView.classList.add("active");
+    if (viewName === "home") {
+      dom.homeView.classList.add("active");
+      Gamification.updateUI();
+    } else if (viewName === "quiz") {
+      dom.quizView.classList.add("active");
+    } else if (viewName === "results") {
+      dom.resultsView.classList.add("active");
+    }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -235,8 +504,17 @@
     state.pendingConfirmAction = null;
   }
 
+  function openAchievementsModal() {
+    Gamification.renderAchievementsModal();
+    dom.achievementsModal.classList.add("open");
+  }
+
+  function closeAchievementsModal() {
+    dom.achievementsModal.classList.remove("open");
+  }
+
   // ==========================================================================
-  // 5. Quiz Initialization & Randomization
+  // 6. Quiz Initialization & Randomization
   // ==========================================================================
   function startQuiz() {
     // 1. Filter Questions
@@ -259,7 +537,7 @@
     const shuffledQuestionPool = shuffleArray(pool);
 
     // 3. For every question, randomize its answer options (A, B, C, D)
-    state.sessionQuestions = shuffledQuestionPool.map((q, idx) => {
+    state.sessionQuestions = shuffledQuestionPool.map((q) => {
       const shuffledOptions = shuffleArray(q.options);
       return {
         originalId: q.id,
@@ -270,7 +548,7 @@
         correctAnswer: q.correctAnswer,
         explanation: q.explanation,
         // Session tracking fields
-        selectedAnswer: null, // string or null
+        selectedAnswer: null,
         isAnswered: false,
         isCorrect: false,
         isFlagged: false
@@ -280,6 +558,14 @@
     state.currentIndex = 0;
     state.quizStartTime = Date.now();
     state.totalElapsedSeconds = 0;
+
+    // Reset Gamification In-Quiz Session
+    Gamification.currentInQuizStreak = 0;
+    Gamification.sessionTotalXPGained = 0;
+    Gamification.sessionXPBreakdown = [];
+    Gamification.newlyUnlockedThisQuiz = [];
+    dom.quizStreakWidget.style.display = "none";
+    dom.quizStreakCount.textContent = "0";
 
     // 4. Update Quiz Header Meta
     dom.quizCategoryBadge.textContent = state.category === "ALL" ? "All Subjects" : state.category;
@@ -315,7 +601,7 @@
   }
 
   // ==========================================================================
-  // 6. Question Navigator
+  // 7. Question Navigator
   // ==========================================================================
   function buildNavigatorGrid() {
     dom.questionNavGrid.innerHTML = "";
@@ -340,13 +626,11 @@
 
   function updateNavigatorStates() {
     const navButtons = dom.questionNavGrid.querySelectorAll(".nav-btn");
-
     let answeredCount = 0;
 
     navButtons.forEach((btn, idx) => {
       const q = state.sessionQuestions[idx];
 
-      // Remove dynamic status classes
       btn.classList.remove("current", "answered", "flagged");
 
       if (idx === state.currentIndex) {
@@ -363,7 +647,6 @@
       }
     });
 
-    // Update Progress Info
     const total = state.sessionQuestions.length;
     dom.questionIndicator.textContent = `Question ${state.currentIndex + 1} of ${total}`;
     dom.answeredStatsBadge.textContent = `${answeredCount} of ${total} Answered`;
@@ -373,13 +656,15 @@
   }
 
   // ==========================================================================
-  // 7. Render Current Question & Options
+  // 8. Render Current Question & Options
   // ==========================================================================
   function renderCurrentQuestion() {
     const q = state.sessionQuestions[state.currentIndex];
     const total = state.sessionQuestions.length;
 
-    // Update Question labels
+    // Record question start time for speed achievement tracking
+    Gamification.questionStartTime = Date.now();
+
     dom.questionNumTag.textContent = `Question ${state.currentIndex + 1} of ${total} • ${q.difficulty}`;
     dom.questionText.textContent = q.question;
 
@@ -419,7 +704,6 @@
       optBtn.appendChild(textSpan);
       optBtn.appendChild(statusIcon);
 
-      // If already answered in this session, show locked feedback states
       if (q.isAnswered) {
         optBtn.disabled = true;
 
@@ -431,7 +715,6 @@
           statusIcon.textContent = "✕";
         }
       } else {
-        // Listening for selection
         optBtn.addEventListener("click", () => {
           handleSelectAnswer(optionText, optBtn);
         });
@@ -474,22 +757,61 @@
   }
 
   // ==========================================================================
-  // 8. Answer Selection & Feedback Highlighting
+  // 9. Answer Selection & Feedback Highlighting (with Gamification XP & Streaks)
   // ==========================================================================
   function handleSelectAnswer(selectedText, clickedButton) {
     const q = state.sessionQuestions[state.currentIndex];
     if (q.isAnswered) return; // Prevent double submit
 
+    const responseTimeSec = (Date.now() - Gamification.questionStartTime) / 1000;
     const isCorrect = selectedText === q.correctAnswer;
     q.selectedAnswer = selectedText;
     q.isAnswered = true;
     q.isCorrect = isCorrect;
 
-    // Play synthesized audio
+    // Handle Streaks & XP
     if (isCorrect) {
       SoundEngine.correct();
+
+      // In-Quiz Streak increment
+      Gamification.currentInQuizStreak += 1;
+      if (Gamification.currentInQuizStreak > Gamification.state.bestInQuizStreak) {
+        Gamification.state.bestInQuizStreak = Gamification.currentInQuizStreak;
+      }
+
+      // Check In-Quiz Streak Achievements
+      if (Gamification.currentInQuizStreak >= 3) {
+        Gamification.unlockAchievement("streak_3");
+      }
+      if (Gamification.currentInQuizStreak >= 5) {
+        Gamification.unlockAchievement("streak_5");
+      }
+
+      // Check Speed Demon Achievement (< 5s)
+      if (responseTimeSec <= 5.0) {
+        Gamification.unlockAchievement("speed_demon");
+      }
+
+      // Calculate XP
+      const baseXP = q.difficulty === "Hard" ? 25 : (q.difficulty === "Medium" ? 20 : 15);
+      const streakBonus = Gamification.currentInQuizStreak >= 2 ? (Gamification.currentInQuizStreak * 5) : 0;
+      const speedBonus = responseTimeSec <= 5.0 ? 10 : 0;
+      const totalEarned = baseXP + streakBonus + speedBonus;
+
+      Gamification.addXP(totalEarned, `Question ${state.currentIndex + 1} (${q.difficulty}${streakBonus ? " + Streak" : ""})`);
+
+      // Visual feedback: Floating XP and Live Streak Widget
+      showFloatingXP(`+${totalEarned} XP!`);
+
+      if (Gamification.currentInQuizStreak >= 2) {
+        dom.quizStreakWidget.style.display = "inline-flex";
+        dom.quizStreakCount.textContent = Gamification.currentInQuizStreak;
+      }
     } else {
       SoundEngine.wrong();
+      // Reset in-quiz streak
+      Gamification.currentInQuizStreak = 0;
+      dom.quizStreakWidget.style.display = "none";
     }
 
     // Disable all options and show colors
@@ -526,7 +848,7 @@
   }
 
   // ==========================================================================
-  // 9. Navigation Actions (Next, Prev, Skip, Jump, Flag)
+  // 10. Navigation Actions (Next, Prev, Skip, Jump, Flag)
   // ==========================================================================
   function navigateToQuestion(newIndex) {
     if (newIndex >= 0 && newIndex < state.sessionQuestions.length) {
@@ -571,7 +893,7 @@
   }
 
   // ==========================================================================
-  // 10. Timer Logic (Whole Quiz Countdown & Per-Question Countdown)
+  // 11. Timer Logic (Whole Quiz Countdown & Per-Question Countdown)
   // ==========================================================================
   function clearAllTimers() {
     if (state.globalTimerInterval) {
@@ -590,7 +912,6 @@
     state.globalTimerInterval = setInterval(() => {
       state.globalSecondsRemaining--;
 
-      // Visual warning under 60 seconds
       if (state.globalSecondsRemaining <= 60) {
         dom.timerWidget.classList.add("warning");
         if (state.globalSecondsRemaining <= 10) {
@@ -603,7 +924,7 @@
       if (state.globalSecondsRemaining <= 0) {
         clearAllTimers();
         showToast("Time is up! Submitting quiz automatically.", "⏰");
-        submitQuiz(true); // Forced auto-submission
+        submitQuiz(true);
       }
     }, 1000);
   }
@@ -640,7 +961,6 @@
     const q = state.sessionQuestions[state.currentIndex];
     if (!q.isAnswered) {
       showToast(`Time ran out for Question ${state.currentIndex + 1}!`, "⌛");
-      // Auto move to next or submit if last
       if (state.currentIndex < state.sessionQuestions.length - 1) {
         handleNext();
       } else {
@@ -650,7 +970,7 @@
   }
 
   // ==========================================================================
-  // 11. Quiz Submission & Results Calculation
+  // 12. Quiz Submission, Results & Rewards Breakdown
   // ==========================================================================
   function confirmSubmitQuiz() {
     const total = state.sessionQuestions.length;
@@ -683,8 +1003,11 @@
     let correctCount = 0;
     let wrongCount = 0;
     let skippedCount = 0;
+    let anyFlagged = false;
 
     state.sessionQuestions.forEach(q => {
+      if (q.isFlagged) anyFlagged = true;
+
       if (!q.isAnswered) {
         skippedCount++;
       } else if (q.isCorrect) {
@@ -696,7 +1019,43 @@
 
     const scorePct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-    // Populate Results Screen
+    // Award Quiz Completion XP Bonuses
+    const completionBaseXP = 50;
+    Gamification.addXP(completionBaseXP, "Quiz Completion Bonus");
+
+    if (scorePct >= 80) {
+      Gamification.addXP(30, "High Score Bonus (≥80%)");
+    }
+    if (scorePct === 100) {
+      Gamification.addXP(100, "Perfect Score Bonus (100%)");
+      Gamification.unlockAchievement("perfect_score");
+    }
+
+    // Check Post-Quiz Achievements
+    Gamification.state.quizzesCompleted += 1;
+    Gamification.unlockAchievement("first_quiz");
+
+    if (anyFlagged) {
+      Gamification.unlockAchievement("tactician");
+    }
+
+    // Polymath Check: Distinct subjects completed
+    const currentSubject = state.category === "ALL" ? "Comprehensive" : state.category;
+    if (!Gamification.state.subjectsPracticed.includes(currentSubject)) {
+      Gamification.state.subjectsPracticed.push(currentSubject);
+    }
+    if (Gamification.state.subjectsPracticed.length >= 3) {
+      Gamification.unlockAchievement("polymath");
+    }
+
+    // Check Level Up achievement
+    if (Gamification.getLevelInfo().level >= 2) {
+      Gamification.unlockAchievement("level_up");
+    }
+
+    Gamification.save();
+
+    // Populate Results Screen Metrics
     dom.scorePercentage.textContent = `${scorePct}%`;
     dom.statTotal.textContent = total;
     dom.statCorrect.textContent = correctCount;
@@ -723,6 +1082,45 @@
       dom.resultsSubheading.textContent = "Review each explanation carefully and retake the quiz to boost your confidence.";
     }
 
+    // Populate Gamification Rewards Card on Results Screen
+    if (dom.resultsTotalXpGained) {
+      dom.resultsTotalXpGained.textContent = `+${Gamification.sessionTotalXPGained} XP`;
+    }
+
+    if (dom.resultsRewardsBreakdown) {
+      dom.resultsRewardsBreakdown.innerHTML = `
+        <div class="reward-pill-item">Correct Answers: <strong>+${correctCount * 20} XP</strong></div>
+        <div class="reward-pill-item">Quiz Completion: <strong>+50 XP</strong></div>
+        ${scorePct >= 80 ? '<div class="reward-pill-item">Mastery Bonus: <strong>+30 XP</strong></div>' : ''}
+        ${scorePct === 100 ? '<div class="reward-pill-item">Flawless 100%: <strong>+100 XP</strong></div>' : ''}
+        <div class="reward-pill-item">Daily Streak: <strong>${Gamification.state.dailyStreak} Days</strong></div>
+      `;
+    }
+
+    // Show any newly unlocked achievements this attempt
+    if (dom.resultsNewAchievementsContainer && dom.resultsNewAchievementsList) {
+      if (Gamification.newlyUnlockedThisQuiz.length > 0) {
+        dom.resultsNewAchievementsContainer.style.display = "block";
+        dom.resultsNewAchievementsList.innerHTML = "";
+        Gamification.newlyUnlockedThisQuiz.forEach(ach => {
+          const item = document.createElement("div");
+          item.className = "achievement-card unlocked";
+          item.style.padding = "10px 14px";
+          item.innerHTML = `
+            <div class="achieve-icon-box" style="width: 36px; height: 36px; min-width: 36px; font-size: 18px;">${ach.icon}</div>
+            <div class="achieve-info">
+              <div class="achieve-title" style="font-size: 0.88rem;">${ach.title}</div>
+              <div class="achieve-desc" style="font-size: 0.75rem;">${ach.desc}</div>
+            </div>
+            <div class="achieve-reward-badge">+${ach.reward} XP</div>
+          `;
+          dom.resultsNewAchievementsList.appendChild(item);
+        });
+      } else {
+        dom.resultsNewAchievementsContainer.style.display = "none";
+      }
+    }
+
     SoundEngine.finish();
 
     // Render Detailed Answer Review
@@ -732,7 +1130,7 @@
   }
 
   // ==========================================================================
-  // 12. Detailed Review Section (with Filters)
+  // 13. Detailed Review Section (with Filters)
   // ==========================================================================
   let currentReviewFilter = "all";
 
@@ -740,7 +1138,6 @@
     currentReviewFilter = filter;
     dom.reviewListContainer.innerHTML = "";
 
-    // Calculate Counts for Filter Chips
     const countAll = state.sessionQuestions.length;
     const countCorrect = state.sessionQuestions.filter(q => q.isCorrect).length;
     const countIncorrect = state.sessionQuestions.filter(q => q.isAnswered && !q.isCorrect).length;
@@ -755,12 +1152,11 @@
       chip.classList.toggle("active", chip.dataset.filter === filter);
     });
 
-    // Filter questions
-    const filteredQuestions = state.sessionQuestions.filter((q, idx) => {
+    const filteredQuestions = state.sessionQuestions.filter((q) => {
       if (filter === "correct") return q.isCorrect;
       if (filter === "incorrect") return q.isAnswered && !q.isCorrect;
       if (filter === "flagged") return q.isFlagged;
-      return true; // "all"
+      return true;
     });
 
     if (filteredQuestions.length === 0) {
@@ -774,13 +1170,10 @@
     }
 
     filteredQuestions.forEach((q) => {
-      // Find actual original index in session
       const originalIdx = state.sessionQuestions.indexOf(q);
-
       const itemCard = document.createElement("div");
       itemCard.className = "review-item";
 
-      // Badge status
       let badgeClass = "skipped";
       let badgeText = "Skipped / Unanswered";
       if (q.isAnswered) {
@@ -822,7 +1215,7 @@
   }
 
   // ==========================================================================
-  // 13. Event Listeners & Binding
+  // 14. Event Listeners & Binding
   // ==========================================================================
   function initEventListeners() {
     // Brand & Header Navigation
@@ -841,6 +1234,13 @@
       dom.soundToggleBtn.textContent = SoundEngine.enabled ? "🔊" : "🔇";
       showToast(SoundEngine.enabled ? "Sound effects enabled" : "Sound effects muted");
     });
+
+    // Gamification Modal Triggers
+    if (dom.headerXpBadge) dom.headerXpBadge.addEventListener("click", openAchievementsModal);
+    if (dom.headerStreakBadge) dom.headerStreakBadge.addEventListener("click", openAchievementsModal);
+    if (dom.headerAchievementsBtn) dom.headerAchievementsBtn.addEventListener("click", openAchievementsModal);
+    if (dom.hubViewAchievementsBtn) dom.hubViewAchievementsBtn.addEventListener("click", openAchievementsModal);
+    if (dom.achievementsModalCloseBtn) dom.achievementsModalCloseBtn.addEventListener("click", closeAchievementsModal);
 
     // Category Select Sync with Quick Cards
     dom.categorySelect.addEventListener("change", (e) => {
@@ -915,7 +1315,7 @@
 
     // Results Actions
     dom.retakeQuizBtn.addEventListener("click", () => {
-      startQuiz(); // Starts brand-new randomized attempt
+      startQuiz();
     });
 
     dom.changeTopicBtn.addEventListener("click", () => {
@@ -929,7 +1329,7 @@
       });
     });
 
-    // Modal Actions
+    // Confirm Modal Actions
     dom.modalCancelBtn.addEventListener("click", closeConfirmModal);
     dom.modalConfirmBtn.addEventListener("click", () => {
       if (typeof state.pendingConfirmAction === "function") {
@@ -937,14 +1337,28 @@
       }
     });
 
+    // Close Modals on Overlay Click
+    window.addEventListener("click", (e) => {
+      if (e.target === dom.achievementsModal) {
+        closeAchievementsModal();
+      }
+      if (e.target === dom.confirmModal) {
+        closeConfirmModal();
+      }
+    });
+
     // Keyboard Shortcuts for Students
     document.addEventListener("keydown", (e) => {
-      // Only process when quiz view is active and modal is not open
-      if (!dom.quizView.classList.contains("active") || dom.confirmModal.classList.contains("open")) {
+      if (e.key === "Escape") {
+        closeAchievementsModal();
+        closeConfirmModal();
         return;
       }
 
-      // 1-4 or A-D to select options
+      if (!dom.quizView.classList.contains("active") || dom.confirmModal.classList.contains("open") || dom.achievementsModal.classList.contains("open")) {
+        return;
+      }
+
       const key = e.key.toUpperCase();
       const optionMap = { "1": 0, "A": 0, "2": 1, "B": 1, "3": 2, "C": 2, "4": 3, "D": 3 };
       if (key in optionMap) {
@@ -976,17 +1390,16 @@
   }
 
   // ==========================================================================
-  // 14. Initialize App
+  // 15. Initialize App
   // ==========================================================================
   function init() {
     initEventListeners();
-    // Pre-populate category select from Question Bank if dynamic
+    Gamification.load();
     if (window.QUESTION_BANK) {
       console.log(`Loaded ${window.QUESTION_BANK.length} practice questions.`);
     }
   }
 
-  // Run on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

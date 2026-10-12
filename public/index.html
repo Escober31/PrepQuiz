@@ -27,6 +27,15 @@
         </div>
       </a>
       <div class="header-actions">
+        <button id="header-xp-badge" class="header-stat-pill xp-pill" title="View Level & Total XP" aria-label="View Level and Total XP">
+          ⚡ <span id="header-xp-val">0</span> XP
+        </button>
+        <button id="header-streak-badge" class="header-stat-pill flame-pill" title="Daily Practice Streak" aria-label="Daily Practice Streak">
+          🔥 <span id="header-streak-val">1</span>d
+        </button>
+        <button id="header-achievements-btn" class="icon-btn" title="View Achievements" aria-label="View Achievements">
+          🏆
+        </button>
         <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
           🔊
         </button>
@@ -52,6 +61,48 @@
         <p class="hero-subtitle">
           Practice with randomized questions, customizable countdown timers, interactive question flags, and in-depth explanations.
         </p>
+      </div>
+
+      <!-- Gamification Progress Hub -->
+      <div class="gamification-hub">
+        <div class="hub-header">
+          <div class="hub-level-info">
+            <div class="level-badge" id="hub-level-badge">Level 1</div>
+            <div>
+              <h3 class="level-title" id="hub-level-title">Novice Scholar</h3>
+              <span class="level-subtext" id="hub-xp-progress-text">0 / 100 XP to Next Level</span>
+            </div>
+          </div>
+          <button type="button" id="hub-view-achievements-btn" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
+            🏆 Achievements (<span id="hub-achievements-count">0/8</span>)
+          </button>
+        </div>
+        <div class="hub-xp-track">
+          <div class="hub-xp-fill" id="hub-xp-fill" style="width: 0%;"></div>
+        </div>
+        <div class="hub-stats-row">
+          <div class="hub-stat-chip">
+            <span class="chip-icon">🔥</span>
+            <div>
+              <div class="chip-value" id="hub-daily-streak">1 Day</div>
+              <div class="chip-label">Daily Study Streak</div>
+            </div>
+          </div>
+          <div class="hub-stat-chip">
+            <span class="chip-icon">⚡</span>
+            <div>
+              <div class="chip-value" id="hub-total-xp">0 XP</div>
+              <div class="chip-label">Lifetime Experience</div>
+            </div>
+          </div>
+          <div class="hub-stat-chip">
+            <span class="chip-icon">🎯</span>
+            <div>
+              <div class="chip-value" id="hub-best-streak">0</div>
+              <div class="chip-label">Best In-Quiz Streak</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="quiz-card" style="padding: 28px 24px;">
@@ -220,6 +271,13 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Live In-Quiz Streak Widget -->
+          <div id="quiz-streak-widget" class="quiz-streak-pill" style="display: none;" title="Current In-Quiz Streak">
+            <span>🔥</span>
+            <span id="quiz-streak-count">0</span>
+            <span style="font-size: 0.72rem; opacity: 0.85;">Streak</span>
+          </div>
+
           <!-- Timer Widget -->
           <div id="timer-widget" class="timer-widget" style="display: none;">
             <span>⏱️</span>
@@ -262,6 +320,9 @@
 
       <!-- Main Question Card -->
       <div class="quiz-card question-card-inner">
+        <!-- Floating XP indicator container -->
+        <div id="floating-xp-container" class="floating-xp-container"></div>
+
         <div class="question-header">
           <div>
             <div id="question-num-tag" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 4px;">
@@ -348,6 +409,27 @@
           </div>
         </div>
 
+        <!-- XP & Achievements Rewards Card -->
+        <div class="results-rewards-card" id="results-rewards-card">
+          <div class="rewards-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.6rem;">⚡</span>
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700;">XP & Rewards Earned</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Points added to your academic progression</p>
+              </div>
+            </div>
+            <div class="rewards-total-badge" id="results-total-xp-gained">+0 XP</div>
+          </div>
+          <div class="rewards-pills-row" id="results-rewards-breakdown">
+            <!-- Dynamic reward pills -->
+          </div>
+          <div id="results-new-achievements-container" style="display: none; margin-top: 14px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #b45309; margin-bottom: 8px;">🎉 Newly Unlocked Achievements!</div>
+            <div id="results-new-achievements-list" class="new-achievements-grid"></div>
+          </div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="results-buttons-row">
           <button id="retake-quiz-btn" class="btn-primary" style="width: auto; padding: 12px 24px;">
@@ -378,6 +460,27 @@
     </section>
 
   </main>
+
+  <!-- Achievements Modal -->
+  <div id="achievements-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 620px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.8rem;">🏆</span>
+          <div>
+            <h3 class="modal-title" style="margin-bottom: 2px;">Study Achievements</h3>
+            <span style="font-size: 0.82rem; color: var(--text-muted);">
+              Unlocked: <strong id="modal-achievements-unlocked-count">0</strong> / 8
+            </span>
+          </div>
+        </div>
+        <button id="achievements-modal-close-btn" class="icon-btn" aria-label="Close modal">✕</button>
+      </div>
+      <div id="achievements-list-modal" class="achievements-grid-scroll" style="overflow-y: auto; flex: 1; padding-right: 4px;">
+        <!-- 8 achievement items rendered dynamically -->
+      </div>
+    </div>
+  </div>
 
   <!-- Reusable Confirmation Modal -->
   <div id="confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
