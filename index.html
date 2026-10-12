@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Responsive Online Quiz Website for students to practice before exams with timer modes, instant explanations, question navigator, and comprehensive review.">
+  <meta name="keywords" content="quiz, exam practice, global warming quiz, online test, study tool, student practice">
+  <title>PrepQuiz - Student Exam Practice Portal</title>
+  
+  <!-- Modern Inter Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="brand-wrapper" id="brand-home-link" aria-label="Go to Home">
+        <div class="brand-icon">🎓</div>
+        <div class="brand-title">
+          PrepQuiz
+          <span class="brand-badge">Exam Prep</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+          🔊
+        </button>
+        <button id="header-home-btn" class="icon-btn" title="Back to Home" aria-label="Back to Home">
+          🏠
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Wrapper -->
+  <main class="app-container">
+
+    <!-- ====================================================================
+         VIEW 1: HOME & SETUP SCREEN
+         ==================================================================== -->
+    <section id="home-view" class="view-panel active">
+      <div class="hero-section">
+        <div class="hero-pill">
+          <span>⚡</span> Active Exam Preparation Mode
+        </div>
+        <h1 class="hero-title">Master Your Subjects <span>Before Exam Day</span></h1>
+        <p class="hero-subtitle">
+          Practice with randomized questions, customizable countdown timers, interactive question flags, and in-depth explanations.
+        </p>
+      </div>
+
+      <div class="quiz-card" style="padding: 28px 24px;">
+        <form id="quiz-config-form">
+
+          <!-- 1. Subject / Category Selection -->
+          <div class="form-group">
+            <label class="form-label" for="category-select">
+              1. Choose Subject or Category
+              <span class="form-label-desc">Select a specific module or practice across all topics</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="category-select" class="custom-select" aria-label="Select Quiz Category">
+                <option value="Understanding Global Warming: A Quiz">Understanding Global Warming: A Quiz (Featured Sample)</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Earth & Environmental Science">Earth & Environmental Science</option>
+                <option value="ALL">All Categories Combined</option>
+              </select>
+            </div>
+
+            <!-- Quick Selection Cards -->
+            <div class="category-pills" id="quick-category-cards">
+              <div class="cat-card-option selected" data-cat="Understanding Global Warming: A Quiz">
+                <span class="cat-icon-badge">🌍</span>
+                <div class="cat-info">
+                  <h4>Understanding Global Warming</h4>
+                  <p>Greenhouse gases, albedo feedback, permafrost, ocean acidification & Paris climate targets.</p>
+                </div>
+              </div>
+              <div class="cat-card-option" data-cat="Mathematics">
+                <span class="cat-icon-badge">📐</span>
+                <div class="cat-info">
+                  <h4>Mathematics</h4>
+                  <p>Linear algebra, geometry, percentages, quadratics, probability & logarithms.</p>
+                </div>
+              </div>
+              <div class="cat-card-option" data-cat="Earth & Environmental Science">
+                <span class="cat-icon-badge">🌿</span>
+                <div class="cat-info">
+                  <h4>Earth & Environmental Science</h4>
+                  <p>Atmospheric layers, tidal power, transpiration & keystone species dynamics.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Difficulty Level Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              2. Select Difficulty Level
+              <span class="form-label-desc">Tailor question complexity to your current study phase</span>
+            </label>
+            <div class="segmented-control" id="difficulty-control">
+              <button type="button" class="segment-btn active" data-difficulty="ALL">All Levels</button>
+              <button type="button" class="segment-btn" data-difficulty="Easy">Easy</button>
+              <button type="button" class="segment-btn" data-difficulty="Medium">Medium</button>
+              <button type="button" class="segment-btn" data-difficulty="Hard">Hard</button>
+            </div>
+          </div>
+
+          <!-- 3. Timer Mode Configuration -->
+          <div class="form-group">
+            <div class="timer-toggle-card">
+              <div class="toggle-header">
+                <div>
+                  <span class="form-label" style="margin-bottom: 2px;">3. Timer Mode</span>
+                  <span class="form-label-desc">Simulate realistic exam pacing with a countdown clock</span>
+                </div>
+                <label class="toggle-switch-label" for="timer-toggle">
+                  <input type="checkbox" id="timer-toggle" class="switch-input" checked>
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <!-- Sub-options for Timer -->
+              <div class="timer-sub-options visible" id="timer-options-container">
+                <label class="timer-radio-card">
+                  <input type="radio" name="timerMode" value="quiz" checked>
+                  <div>
+                    <div class="timer-radio-label">Countdown for Whole Quiz</div>
+                    <div class="timer-radio-desc">Overall time bank (auto-submits quiz when time expires)</div>
+                    <div style="margin-top: 8px;">
+                      <select id="whole-quiz-minutes" class="custom-select" style="padding: 6px 10px; font-size: 0.85rem; width: auto;">
+                        <option value="3">3 Minutes</option>
+                        <option value="5" selected>5 Minutes</option>
+                        <option value="10">10 Minutes</option>
+                        <option value="15">15 Minutes</option>
+                      </select>
+                    </div>
+                  </div>
+                </label>
+
+                <label class="timer-radio-card">
+                  <input type="radio" name="timerMode" value="question">
+                  <div>
+                    <div class="timer-radio-label">Countdown for Each Question</div>
+                    <div class="timer-radio-desc">Individual question clock (moves forward when time expires)</div>
+                    <div style="margin-top: 8px;">
+                      <select id="per-question-seconds" class="custom-select" style="padding: 6px 10px; font-size: 0.85rem; width: auto;">
+                        <option value="20">20 Seconds / question</option>
+                        <option value="30" selected>30 Seconds / question</option>
+                        <option value="45">45 Seconds / question</option>
+                        <option value="60">60 Seconds / question</option>
+                      </select>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Highlights Strip -->
+          <div class="features-strip">
+            <div class="feature-item">
+              <span>🔀</span> Question & Option Randomization
+            </div>
+            <div class="feature-item">
+              <span>💡</span> Instant "Why this is correct" Explanations
+            </div>
+            <div class="feature-item">
+              <span>⚑</span> Question Navigator with Review Flags
+            </div>
+          </div>
+
+          <!-- Submit Start Button -->
+          <button type="submit" id="start-quiz-btn" class="btn-primary">
+            <span>🚀</span> Start Practice Quiz
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 2: ACTIVE QUIZ SCREEN
+         ==================================================================== -->
+    <section id="quiz-view" class="view-panel">
+      <!-- Quiz Top Bar -->
+      <div class="quiz-top-bar">
+        <div class="quiz-meta-info">
+          <span id="quiz-category-badge" class="category-tag">Understanding Global Warming</span>
+          <span id="quiz-difficulty-badge" class="difficulty-tag medium">Medium</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Timer Widget -->
+          <div id="timer-widget" class="timer-widget" style="display: none;">
+            <span>⏱️</span>
+            <span id="timer-display">05:00</span>
+            <span id="timer-type-label" style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">(Quiz)</span>
+          </div>
+
+          <button id="quit-quiz-btn" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">
+            Quit
+          </button>
+        </div>
+      </div>
+
+      <!-- Progress Section -->
+      <div class="progress-card">
+        <div class="progress-header">
+          <span id="question-indicator">Question 1 of 8</span>
+          <span id="answered-stats-badge">0 of 8 Answered</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Question Navigator -->
+      <div class="navigator-container">
+        <div class="navigator-header">
+          <span class="navigator-title">Question Navigator</span>
+          <div class="navigator-legend">
+            <span class="legend-item"><span class="legend-dot current"></span> Current</span>
+            <span class="legend-item"><span class="legend-dot answered"></span> Answered</span>
+            <span class="legend-item"><span class="legend-dot unanswered"></span> Unanswered</span>
+            <span class="legend-item"><span class="legend-dot flagged"></span> ⚑ Flagged</span>
+          </div>
+        </div>
+        <div id="question-nav-grid" class="nav-buttons-grid">
+          <!-- Dynamically populated numbered buttons -->
+        </div>
+      </div>
+
+      <!-- Main Question Card -->
+      <div class="quiz-card question-card-inner">
+        <div class="question-header">
+          <div>
+            <div id="question-num-tag" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 4px;">
+              Question 1
+            </div>
+            <h2 id="question-text" class="question-prompt">Loading question...</h2>
+          </div>
+          <button id="flag-btn" class="btn-flag" type="button" title="Flag this question to review later">
+            <span id="flag-icon">⚐</span>
+            <span id="flag-text">Flag for Review</span>
+          </button>
+        </div>
+
+        <!-- Options Stack (A to D) -->
+        <div id="options-container" class="options-stack">
+          <!-- Dynamically populated options A to D -->
+        </div>
+
+        <!-- Explanation Card (Shown after an option is selected) -->
+        <div id="explanation-card" class="explanation-card">
+          <div class="explanation-title">
+            <span>💡</span> Why this is correct:
+          </div>
+          <p id="explanation-text" class="explanation-content"></p>
+        </div>
+
+        <!-- Quiz Navigation Controls -->
+        <div class="quiz-footer-actions">
+          <div class="nav-direction-buttons">
+            <button id="prev-btn" class="btn-secondary" type="button" disabled>
+              ← Previous
+            </button>
+            <button id="skip-btn" class="btn-secondary" type="button">
+              Skip Question
+            </button>
+            <button id="next-btn" class="btn-primary" type="button" style="width: auto; padding: 10px 20px;">
+              Next →
+            </button>
+          </div>
+
+          <button id="submit-quiz-btn" class="btn-primary" type="button" style="background: #059669; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); width: auto; padding: 10px 22px;">
+            <span>✓</span> Finish & Submit Quiz
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 3: RESULTS & EXAM REVIEW SCREEN
+         ==================================================================== -->
+    <section id="results-view" class="view-panel">
+      <div class="quiz-card results-card">
+        <div class="results-hero-badge" id="results-icon">🎉</div>
+        <h2 class="results-title" id="results-heading">Quiz Completed!</h2>
+        <p class="results-subtitle" id="results-subheading">Here is how you performed on this practice exam attempt.</p>
+
+        <!-- Score Highlight Circle -->
+        <div class="score-highlight">
+          <div class="score-number" id="score-percentage">0%</div>
+          <div class="score-label">Final Score</div>
+        </div>
+
+        <!-- Stats Breakdown -->
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-name">Total Questions</div>
+          </div>
+          <div class="stat-item stat-correct">
+            <div class="stat-value" id="stat-correct">0</div>
+            <div class="stat-name">Correct Answers</div>
+          </div>
+          <div class="stat-item stat-wrong">
+            <div class="stat-value" id="stat-wrong">0</div>
+            <div class="stat-name">Incorrect</div>
+          </div>
+          <div class="stat-item stat-skipped">
+            <div class="stat-value" id="stat-skipped">0</div>
+            <div class="stat-name">Skipped / Unanswered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-time">0m 0s</div>
+            <div class="stat-name">Time Taken</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="results-buttons-row">
+          <button id="retake-quiz-btn" class="btn-primary" style="width: auto; padding: 12px 24px;">
+            <span>🔄</span> Retake Quiz (New Shuffle)
+          </button>
+          <button id="change-topic-btn" class="btn-secondary" style="padding: 12px 24px;">
+            <span>🏠</span> Change Topic / Settings
+          </button>
+        </div>
+
+        <!-- Detailed Review Section -->
+        <div class="review-section">
+          <div class="review-section-header">
+            <h3 style="font-size: 1.2rem; font-weight: 700;">Detailed Question Breakdown</h3>
+            <div class="review-filters">
+              <button class="filter-chip active" data-filter="all">All (<span id="count-all">0</span>)</button>
+              <button class="filter-chip" data-filter="correct">Correct (<span id="count-correct">0</span>)</button>
+              <button class="filter-chip" data-filter="incorrect">Incorrect (<span id="count-incorrect">0</span>)</button>
+              <button class="filter-chip" data-filter="flagged">Flagged (<span id="count-flagged">0</span>)</button>
+            </div>
+          </div>
+
+          <div id="review-list-container" class="review-list">
+            <!-- Dynamically populated question-by-question review items -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reusable Confirmation Modal -->
+  <div id="confirm-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-dialog">
+      <h3 id="modal-title" class="modal-title">Confirm Action</h3>
+      <p id="modal-body" class="modal-body">Are you sure you want to proceed?</p>
+      <div class="modal-actions">
+        <button id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+        <button id="modal-confirm-btn" class="btn-primary" style="width: auto; padding: 8px 18px;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notice" role="status" aria-live="polite">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>PrepQuiz • Interactive Student Exam Preparation System • All Questions & Explanations Loaded Client-Side</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
