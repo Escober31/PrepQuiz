@@ -76,7 +76,7 @@ body {
 
 /* Layout Container */
 .app-container {
-  max-width: 960px;
+  max-width: 1040px;
   width: 100%;
   margin: 0 auto;
   padding: 24px 16px 48px;
@@ -87,7 +87,7 @@ body {
 .site-header {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-light);
-  padding: 14px 20px;
+  padding: 12px 18px;
   position: sticky;
   top: 0;
   z-index: 40;
@@ -95,7 +95,7 @@ body {
 }
 
 .header-inner {
-  max-width: 960px;
+  max-width: 1040px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -1670,38 +1670,412 @@ body {
   gap: 10px;
 }
 
-/* Responsive Breakpoints */
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: 1.75rem;
+/* ==========================================================================
+   Comprehensive Responsive System (PC, Tablet & Mobile Phone)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Large Screens & PC Optimization (>= 1024px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  .app-container {
+    padding: 32px 24px 64px;
   }
-  
-  .quiz-top-bar {
+
+  .quiz-card {
+    padding: 32px;
+  }
+
+  .question-prompt {
+    font-size: 1.35rem;
+    line-height: 1.5;
+  }
+
+  .option-btn {
+    padding: 16px 20px;
+    font-size: 1rem;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    transform: translateX(4px);
+  }
+
+  .nav-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Tablets & Medium Screens (<= 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .category-pills {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Mobile Phones (<= 640px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  /* Header Layout */
+  .site-header {
+    padding: 10px 14px;
+  }
+
+  .header-inner {
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .brand-title {
+    font-size: 1.02rem;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-stat-pill {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  /* App Container & Cards */
+  .app-container {
+    padding: 14px 10px 40px;
+  }
+
+  .quiz-card {
+    padding: 18px 14px !important;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-section {
+    padding: 20px 8px 16px;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+    line-height: 1.25;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Gamification Hub */
+  .gamification-hub {
+    padding: 16px 14px;
+    margin-bottom: 16px;
+  }
+
+  .hub-header {
     flex-direction: column;
     align-items: flex-start;
-  }
-  
-  .quiz-footer-actions {
-    flex-direction: column-reverse;
     gap: 10px;
   }
 
-  .nav-direction-buttons {
+  .hub-level-info {
+    width: 100%;
+  }
+
+  #hub-view-achievements-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hub-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .hub-stat-chip {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+
+  .chip-icon {
+    font-size: 1.3rem;
+  }
+
+  .chip-value {
+    font-size: 0.95rem;
+  }
+
+  .chip-label {
+    font-size: 0.65rem;
+  }
+
+  /* Setup Form Controls */
+  .category-pills {
+    grid-template-columns: 1fr;
+  }
+
+  .cat-card-option {
+    padding: 12px 14px;
+  }
+
+  .segmented-control {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .segment-btn {
+    padding: 8px 8px;
+    font-size: 0.8rem;
+    min-width: 45%;
+    flex: 1 1 45%;
+  }
+
+  .timer-sub-options.visible {
+    grid-template-columns: 1fr;
+  }
+
+  .features-strip {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .feature-item {
+    font-size: 0.8rem;
+  }
+
+  /* Quiz View Mobile */
+  .quiz-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .quiz-meta-info {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .quiz-top-bar > div:last-child {
     width: 100%;
     justify-content: space-between;
   }
 
-  .quiz-footer-actions .btn-primary {
+  .navigator-container {
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+
+  .navigator-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .navigator-legend {
+    gap: 8px;
+    font-size: 0.7rem;
+  }
+
+  .nav-buttons-grid {
+    gap: 6px;
+  }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.78rem;
+  }
+
+  .question-card-inner {
+    padding: 16px 12px !important;
+  }
+
+  .question-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .question-header > div {
     width: 100%;
+  }
+
+  .btn-flag {
+    align-self: flex-start;
+  }
+
+  .question-prompt {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .options-stack {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .option-btn {
+    padding: 12px 12px;
+    font-size: 0.9rem;
+    gap: 10px;
+    min-height: 48px; /* Accessible touch target */
+  }
+
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    font-size: 0.8rem;
+  }
+
+  .explanation-card {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+
+  /* Footer Navigation on Mobile */
+  .quiz-footer-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+
+  .nav-direction-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .nav-direction-buttons .btn-secondary,
+  .nav-direction-buttons .btn-primary {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .quiz-footer-actions > .btn-primary {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  /* Results Screen on Mobile */
+  .results-card {
+    padding: 24px 14px !important;
+  }
+
+  .results-hero-badge {
+    font-size: 38px;
+    margin-bottom: 8px;
+  }
+
+  .results-title {
+    font-size: 1.6rem;
+  }
+
+  .score-highlight {
+    width: 115px;
+    height: 115px;
+    margin-bottom: 20px;
+  }
+
+  .score-number {
+    font-size: 2rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .stats-grid .stat-item:last-child {
+    grid-column: span 2;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .results-buttons-row {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .results-buttons-row button {
     width: 100%;
   }
 
-  .hub-header {
-    flex-direction: column;
-    align-items: flex-start;
+  /* Modals on Mobile */
+  .modal-dialog {
+    padding: 18px 16px;
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .achievement-card {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .achieve-icon-box {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    font-size: 20px;
+  }
+
+  .achieve-title {
+    font-size: 0.88rem;
+  }
+
+  .achieve-desc {
+    font-size: 0.75rem;
+  }
+
+  .achieve-reward-badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Very Small Phones (<= 380px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 380px) {
+  .brand-badge {
+    display: none;
+  }
+
+  .header-stat-pill {
+    padding: 3px 6px;
+    font-size: 0.7rem;
   }
 
   .hub-stats-row {
