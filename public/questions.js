@@ -590,6 +590,136 @@ const QUESTION_BANK = [
     ],
     correctAnswer: "Dynamic Programming",
     explanation: "Dynamic Programming (DP) is applied to problems exhibiting optimal substructure and overlapping subproblems, avoiding exponential re-computations by storing answers to smaller subproblems in a lookup table."
+  },
+
+  // --------------------------------------------------------------------------
+  // CATEGORY: English
+  // --------------------------------------------------------------------------
+  {
+    id: "eng-1",
+    category: "English",
+    difficulty: "Easy",
+    question: "Which part of speech modifies a verb, an adjective, or another adverb by indicating manner, time, degree, or place?",
+    options: [
+      "Adverb",
+      "Preposition",
+      "Conjunction",
+      "Pronoun"
+    ],
+    correctAnswer: "Adverb",
+    explanation: "An adverb qualifies or provides additional descriptive context for verbs (e.g., 'ran quickly'), adjectives ('unusually quiet'), or other adverbs ('very slowly')."
+  },
+  {
+    id: "eng-2",
+    category: "English",
+    difficulty: "Easy",
+    question: "Which of the following sentences demonstrates correct subject-verb agreement?",
+    options: [
+      "Each of the students has submitted their assignment.",
+      "Each of the students have submitted their assignment.",
+      "The flock of birds were flying south for the winter.",
+      "Neither the teacher nor the students was present."
+    ],
+    correctAnswer: "Each of the students has submitted their assignment.",
+    explanation: "The indefinite pronoun 'Each' is singular and requires the singular verb 'has'. In the other sentences: 'flock' is a collective noun taking 'was', and for 'neither/nor', the verb agrees with the closer subject ('students were')."
+  },
+  {
+    id: "eng-3",
+    category: "English",
+    difficulty: "Easy",
+    question: "What is the closest synonym for the word 'abundant'?",
+    options: [
+      "Plentiful",
+      "Scattered",
+      "Deficient",
+      "Fragile"
+    ],
+    correctAnswer: "Plentiful",
+    explanation: "'Abundant' means existing or available in large, copious quantities. 'Plentiful' is its direct synonym, whereas 'deficient' is its antonym."
+  },
+  {
+    id: "eng-4",
+    category: "English",
+    difficulty: "Medium",
+    question: "Which literary device involves an explicit comparison between two dissimilar things using connecting words such as 'like' or 'as'?",
+    options: [
+      "Simile",
+      "Metaphor",
+      "Personification",
+      "Hyperbole"
+    ],
+    correctAnswer: "Simile",
+    explanation: "A simile makes an explicit comparison between two unlike objects or ideas using words such as 'like' or 'as' (e.g., 'as bold as brass'), unlike a metaphor which states one thing is another."
+  },
+  {
+    id: "eng-5",
+    category: "English",
+    difficulty: "Medium",
+    question: "What type of sentence structure consists of exactly one independent clause and at least one dependent (subordinate) clause?",
+    options: [
+      "Complex sentence",
+      "Compound sentence",
+      "Simple sentence",
+      "Compound-complex sentence"
+    ],
+    correctAnswer: "Complex sentence",
+    explanation: "A complex sentence combines one independent clause with one or more dependent clauses introduced by subordinating conjunctions (e.g., 'Although it was raining, we continued our walk.')."
+  },
+  {
+    id: "eng-6",
+    category: "English",
+    difficulty: "Medium",
+    question: "Which of the following sentences is written in the passive voice?",
+    options: [
+      "The landmark study was published by the research team last October.",
+      "The research team published the landmark study last October.",
+      "Students actively reviewed the primary sources in class.",
+      "The novelist crafted a gripping resolution to the mystery."
+    ],
+    correctAnswer: "The landmark study was published by the research team last October.",
+    explanation: "In passive voice, the grammatical subject ('The landmark study') is the recipient of the action rather than the performer ('the research team'), formulated with a form of 'to be' plus a past participle."
+  },
+  {
+    id: "eng-7",
+    category: "English",
+    difficulty: "Hard",
+    question: "Which rhetorical device is characterized by the deliberate repetition of a word or phrase at the beginning of successive sentences or clauses?",
+    options: [
+      "Anaphora",
+      "Epistrophe",
+      "Chiasmus",
+      "Synecdoche"
+    ],
+    correctAnswer: "Anaphora",
+    explanation: "Anaphora is the rhetorical repetition of words at the start of adjacent clauses for rhythmic or emotional emphasis (e.g., Martin Luther King Jr.'s 'I have a dream...' or Winston Churchill's 'We shall fight...')."
+  },
+  {
+    id: "eng-8",
+    category: "English",
+    difficulty: "Hard",
+    question: "What is the precise meaning of the adjective 'ephemeral'?",
+    options: [
+      "Lasting for a very short, transient time",
+      "Having profound spiritual or ethereal significance",
+      "Permanently ingrained or impossible to erase",
+      "Displaying aggressive or combative behavior"
+    ],
+    correctAnswer: "Lasting for a very short, transient time",
+    explanation: "'Ephemeral' derives from the Greek 'ephēmeros' (lasting only a day) and describes phenomena, beauty, or states that are fleeting and transitory."
+  },
+  {
+    id: "eng-9",
+    category: "English",
+    difficulty: "Hard",
+    question: "In George Orwell's classic dystopian novel '1984', what term designates the totalitarian artificial language engineered by the Party to restrict the range of human thought?",
+    options: [
+      "Newspeak",
+      "Doublethink",
+      "Thoughtcrime",
+      "Ingsoc"
+    ],
+    correctAnswer: "Newspeak",
+    explanation: "Newspeak is the controlled language devised by the state of Oceania in Orwell's '1984' to limit expressive thought, eliminate nuances, and make unorthodox political ideas ('thoughtcrime') literally impossible to articulate."
   }
 ];
 
