@@ -1,213 +1,25 @@
 /**
  * Question Bank for Student Online Quiz Practice Portal
- * Categorized by topic and difficulty level (Easy, Medium, Hard).
- * Each question includes:
- *  - id: unique identifier
- *  - category: topic name
- *  - difficulty: "Easy" | "Medium" | "Hard"
- *  - question: question text
- *  - options: array of 4 choices
- *  - correctAnswer: string matching the correct choice
- *  - explanation: detailed scientific explanation for learning
+ * Categorized by Subject and Difficulty level (Easy, Medium, Hard).
+ * Each subject supports designated lesson modules matching the curriculum:
+ *  - Mathematics (2 lessons)
+ *  - English (1 lesson)
+ *  - Science (1 lesson)
+ *  - Physics (1 lesson)
+ *  - Chemistry (1 lesson)
+ *  - Biology (1 lesson)
+ *  - Computing (1 lesson)
  */
 
 const QUESTION_BANK = [
-  // --------------------------------------------------------------------------
-  // CATEGORY: Understanding Global Warming: A Quiz (Sample Featured Quiz)
-  // --------------------------------------------------------------------------
-  {
-    id: "gw-1",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Easy",
-    question: "What is the primary greenhouse gas released by human activities such as burning coal, oil, and natural gas?",
-    options: [
-      "Carbon dioxide (CO₂)",
-      "Methane (CH₄)",
-      "Nitrous oxide (N₂O)",
-      "Ozone (O₃)"
-    ],
-    correctAnswer: "Carbon dioxide (CO₂)",
-    explanation: "Carbon dioxide (CO₂) is the primary greenhouse gas emitted through human activities, accounting for about 76% of all global anthropogenic greenhouse gas emissions, mainly from burning fossil fuels."
-  },
-  {
-    id: "gw-2",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Easy",
-    question: "What is the 'Greenhouse Effect' in the context of Earth's atmosphere?",
-    options: [
-      "The trapping of heat radiated from Earth by atmospheric gases, keeping the planet warmer than it would otherwise be",
-      "The cooling of Earth's crust due to reflection of solar radiation by clouds",
-      "The physical barrier formed by buildings and glass structures in urban areas",
-      "The seasonal variation in sunlight due to the tilt of Earth's rotational axis"
-    ],
-    correctAnswer: "The trapping of heat radiated from Earth by atmospheric gases, keeping the planet warmer than it would otherwise be",
-    explanation: "Naturally, greenhouse gases absorb infrared thermal energy radiated by Earth's surface and re-radiate it in all directions, warming the lower atmosphere. Human activities have artificially amplified this natural effect."
-  },
-  {
-    id: "gw-3",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Easy",
-    question: "Which of the following is considered a major natural 'carbon sink' that absorbs large quantities of atmospheric carbon dioxide?",
-    options: [
-      "Oceans and vast forest ecosystems",
-      "Deserts and sand dunes",
-      "Atmospheric ozone layer",
-      "Active volcanic vents"
-    ],
-    correctAnswer: "Oceans and vast forest ecosystems",
-    explanation: "Oceans absorb roughly 25-30% of anthropogenic CO₂ emissions, while terrestrial ecosystems like forests and peatlands absorb another substantial portion through photosynthesis and organic matter storage."
-  },
-  {
-    id: "gw-4",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Medium",
-    question: "How does the melting of polar sea ice create a dangerous 'positive feedback loop' accelerating climate warming?",
-    options: [
-      "Dark ocean water absorbs more solar heat than reflective white ice, lowering the albedo and causing further melting",
-      "Melting ice releases massive amounts of dissolved helium into the upper troposphere",
-      "Cold water from melted glaciers stops planetary rotation speed",
-      "Melting ice directly increases the distance between Earth and the Sun"
-    ],
-    correctAnswer: "Dark ocean water absorbs more solar heat than reflective white ice, lowering the albedo and causing further melting",
-    explanation: "This is known as the ice-albedo feedback. Ice reflects up to 80-90% of incoming solar radiation (high albedo). When it melts, darker open water (albedo ~6-10%) absorbs thermal energy, warming the ocean and causing even faster ice melting."
-  },
-  {
-    id: "gw-5",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Medium",
-    question: "Why is Methane (CH₄) considered a potent greenhouse gas even though it exists in much smaller atmospheric concentrations than CO₂?",
-    options: [
-      "It has a Global Warming Potential (GWP) roughly 28 to 36 times higher than CO₂ over a 100-year timescale",
-      "It permanently destroys atmospheric nitrogen molecules upon release",
-      "It remains in the atmosphere for tens of thousands of years without breaking down",
-      "It blocks incoming ultraviolet light, causing terrestrial overheating"
-    ],
-    correctAnswer: "It has a Global Warming Potential (GWP) roughly 28 to 36 times higher than CO₂ over a 100-year timescale",
-    explanation: "While methane has a shorter atmospheric lifetime (~12 years) compared to CO₂, it is significantly more effective at trapping infrared thermal radiation, making its warming impact over 80 times stronger than CO₂ over a 20-year span and ~28-36 times over 100 years."
-  },
-  {
-    id: "gw-6",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Medium",
-    question: "What phenomenon occurs when excessive atmospheric CO₂ dissolves into the world's oceans, threatening shellfish and coral reefs?",
-    options: [
-      "Ocean acidification",
-      "Ocean desalinization",
-      "Thermal expansion",
-      "Eutrophication"
-    ],
-    correctAnswer: "Ocean acidification",
-    explanation: "When CO₂ dissolves in seawater, it reacts with water to form carbonic acid (H₂CO₃), which lowers ocean pH and reduces available carbonate ions necessary for corals, oysters, and mollusks to build their shells and skeletons."
-  },
-  {
-    id: "gw-7",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Hard",
-    question: "Under the landmark 2015 Paris Agreement, nations agreed to pursue efforts to limit the increase in global average temperature to what threshold above pre-industrial levels?",
-    options: [
-      "Well below 2.0°C, with concerted efforts toward 1.5°C",
-      "Exactly 3.0°C above baseline temperatures",
-      "Stabilization at 0.5°C below pre-industrial levels",
-      "No more than 4.5°C increase by 2100"
-    ],
-    correctAnswer: "Well below 2.0°C, with concerted efforts toward 1.5°C",
-    explanation: "Article 2 of the Paris Agreement commits signatories to holding the global average temperature increase to well below 2°C above pre-industrial levels and to pursue efforts to limit the increase to 1.5°C to avoid irreversible ecological tipping points."
-  },
-  {
-    id: "gw-8",
-    category: "Understanding Global Warming: A Quiz",
-    difficulty: "Hard",
-    question: "What is the primary danger associated with thawing Arctic permafrost in relation to global atmospheric temperature rise?",
-    options: [
-      "Microbial decay of previously frozen organic matter releases vast reservoirs of trapped methane and carbon dioxide",
-      "It causes global sea levels to instantly rise by over 50 meters due to subterranean ice collapse",
-      "It alters the polarity of the Earth's geomagnetic field",
-      "It cools the troposphere so abruptly that seasonal weather patterns permanently halt"
-    ],
-    correctAnswer: "Microbial decay of previously frozen organic matter releases vast reservoirs of trapped methane and carbon dioxide",
-    explanation: "Arctic permafrost contains an estimated 1,400 to 1,600 gigatons of carbon—about twice the amount currently in the atmosphere. Thawing allows microbes to decompose ancient organic plant and animal remains, liberating huge quantities of CO₂ and CH₄."
-  },
-
-  // --------------------------------------------------------------------------
-  // CATEGORY: Earth & Environmental Science
-  // --------------------------------------------------------------------------
-  {
-    id: "es-1",
-    category: "Earth & Environmental Science",
-    difficulty: "Easy",
-    question: "Which layer of the atmosphere contains the protective ozone layer that filters out harmful solar ultraviolet (UV) radiation?",
-    options: [
-      "Stratosphere",
-      "Troposphere",
-      "Mesosphere",
-      "Thermosphere"
-    ],
-    correctAnswer: "Stratosphere",
-    explanation: "The stratosphere extends from roughly 10 km to 50 km above the Earth's surface and houses the ozone layer (O₃), which absorbs most of the Sun's harmful biological ultraviolet-B and ultraviolet-C radiation."
-  },
-  {
-    id: "es-2",
-    category: "Earth & Environmental Science",
-    difficulty: "Easy",
-    question: "What renewable energy source harnesses the gravitational pull of the Moon and the Sun on Earth's oceans?",
-    options: [
-      "Tidal energy",
-      "Geothermal energy",
-      "Biomass energy",
-      "Hydroelectric dam energy"
-    ],
-    correctAnswer: "Tidal energy",
-    explanation: "Tidal power converts the kinetic and potential energy of ocean tides—driven primarily by gravitational interactions between Earth, the Moon, and the Sun—into clean electrical power."
-  },
-  {
-    id: "es-3",
-    category: "Earth & Environmental Science",
-    difficulty: "Medium",
-    question: "What process in the hydrologic cycle describes the release of water vapor into the air from plant leaves?",
-    options: [
-      "Transpiration",
-      "Sublimation",
-      "Condensation",
-      "Percolation"
-    ],
-    correctAnswer: "Transpiration",
-    explanation: "Transpiration is the biological evaporation of water from plant leaves through microscopic pores called stomata, contributing significantly to atmospheric humidity and cloud formation."
-  },
-  {
-    id: "es-4",
-    category: "Earth & Environmental Science",
-    difficulty: "Medium",
-    question: "Which term describes a species that has a disproportionately large impact on its natural environment relative to its abundance?",
-    options: [
-      "Keystone species",
-      "Invasive species",
-      "Pioneer species",
-      "Indicator species"
-    ],
-    correctAnswer: "Keystone species",
-    explanation: "A keystone species (such as sea otters in kelp forests or wolves in Yellowstone) plays a critical role in maintaining the structure and biodiversity of an ecological community. Without them, the ecosystem changes drastically or collapses."
-  },
-  {
-    id: "es-5",
-    category: "Earth & Environmental Science",
-    difficulty: "Hard",
-    question: "What term describes the boundary between the unsaturated zone (vadose zone) and the saturated zone beneath Earth's surface?",
-    options: [
-      "Water table",
-      "Aquiclude",
-      "Capillary fringe",
-      "Artesian boundary"
-    ],
-    correctAnswer: "Water table",
-    explanation: "The water table is the subterranean boundary where water pressure equals atmospheric pressure, separating the unsaturated upper soil zone from the saturated aquifer zone below."
-  },
-
-  // --------------------------------------------------------------------------
-  // CATEGORY: Mathematics
-  // --------------------------------------------------------------------------
+  // ==========================================================================
+  // SUBJECT: Mathematics (Lesson 1: Algebra, Triangles & Percentages)
+  // ==========================================================================
   {
     id: "math-1",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 1,
     difficulty: "Easy",
     question: "Solve for x in the linear equation: 4x - 9 = 15",
     options: [
@@ -221,7 +33,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-2",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 1,
     difficulty: "Easy",
     question: "What is the area of a right-angled triangle with a base of 14 cm and a perpendicular height of 6 cm?",
     options: [
@@ -235,7 +49,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-3",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 1,
     difficulty: "Easy",
     question: "A winter jacket originally priced at $80 is on sale with a 25% discount. What is the sale price?",
     options: [
@@ -249,7 +65,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-4",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 1,
     difficulty: "Medium",
     question: "What are the roots of the quadratic equation: x² - 8x + 15 = 0?",
     options: [
@@ -261,9 +79,15 @@ const QUESTION_BANK = [
     correctAnswer: "x = 3 and x = 5",
     explanation: "Factoring the quadratic expression gives (x - 3)(x - 5) = 0. Setting each factor equal to zero yields the solutions x = 3 and x = 5."
   },
+
+  // ==========================================================================
+  // SUBJECT: Mathematics (Lesson 2: Quadratics, Probability & Logarithms)
+  // ==========================================================================
   {
     id: "math-5",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 2,
     difficulty: "Medium",
     question: "In a right triangle, the two perpendicular legs measure 9 cm and 12 cm. What is the length of the hypotenuse?",
     options: [
@@ -277,7 +101,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-6",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 2,
     difficulty: "Medium",
     question: "Simplify the algebraic expression: (3x²y³) × (4x⁴y²)",
     options: [
@@ -291,7 +117,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-7",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 2,
     difficulty: "Hard",
     question: "If two standard six-sided dice are rolled simultaneously, what is the probability that the sum of the two faces equals 9?",
     options: [
@@ -305,7 +133,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-8",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 2,
     difficulty: "Hard",
     question: "How many distinct ways can a committee of 3 members be selected from a group of 8 candidates?",
     options: [
@@ -319,7 +149,9 @@ const QUESTION_BANK = [
   },
   {
     id: "math-9",
+    subject: "Mathematics",
     category: "Mathematics",
+    lesson: 2,
     difficulty: "Hard",
     question: "What is the value of x that satisfies the logarithmic equation: log₂(x) + log₂(x - 2) = 3?",
     options: [
@@ -332,272 +164,14 @@ const QUESTION_BANK = [
     explanation: "Using logarithm product rule: log₂(x(x - 2)) = 3. In exponential form: x(x - 2) = 2³ = 8, which rearranges to x² - 2x - 8 = 0. Factoring gives (x - 4)(x + 2) = 0. Because logarithmic arguments must be positive (x > 2), the only real solution is x = 4."
   },
 
-  // --------------------------------------------------------------------------
-  // CATEGORY: History
-  // --------------------------------------------------------------------------
-  {
-    id: "hist-1",
-    category: "History",
-    difficulty: "Easy",
-    question: "Which ancient civilization constructed the Great Pyramids of Giza along the Nile River?",
-    options: [
-      "Ancient Egyptians",
-      "Mesopotamians",
-      "Ancient Greeks",
-      "Indus Valley Civilization"
-    ],
-    correctAnswer: "Ancient Egyptians",
-    explanation: "The Great Pyramids of Giza were built during the Fourth Dynasty of the Old Kingdom in Ancient Egypt (circa 2580–2560 BCE) as monumental royal tombs for pharaohs such as Khufu."
-  },
-  {
-    id: "hist-2",
-    category: "History",
-    difficulty: "Easy",
-    question: "In which year did World War II officially conclude following the surrender of Axis forces?",
-    options: [
-      "1945",
-      "1939",
-      "1918",
-      "1950"
-    ],
-    correctAnswer: "1945",
-    explanation: "World War II officially concluded in 1945 after the surrender of Germany in May (V-E Day) and Japan in September (V-J Day) aboard the USS Missouri."
-  },
-  {
-    id: "hist-3",
-    category: "History",
-    difficulty: "Easy",
-    question: "The historic Magna Carta, which limited royal authority and laid foundations for modern constitutional law, was signed in 1215 by which English king?",
-    options: [
-      "King John",
-      "King Henry VIII",
-      "King Richard the Lionheart",
-      "King George III"
-    ],
-    correctAnswer: "King John",
-    explanation: "King John of England was forced by rebel barons to agree to the Magna Carta at Runnymede in June 1215, legally affirming that sovereign rulers are subject to the rule of law."
-  },
-  {
-    id: "hist-4",
-    category: "History",
-    difficulty: "Medium",
-    question: "Who introduced movable mechanical type printing to Europe in the 1440s, igniting the Printing Revolution?",
-    options: [
-      "Johannes Gutenberg",
-      "Leonardo da Vinci",
-      "Galileo Galilei",
-      "Desiderius Erasmus"
-    ],
-    correctAnswer: "Johannes Gutenberg",
-    explanation: "German inventor Johannes Gutenberg developed the movable-type printing press around 1440 in Mainz, Germany. This revolutionized mass communication, literacy, and the rapid dissemination of scientific ideas."
-  },
-  {
-    id: "hist-5",
-    category: "History",
-    difficulty: "Medium",
-    question: "Who became the first official Emperor of the Roman Empire in 27 BCE following the collapse of the Roman Republic?",
-    options: [
-      "Augustus (Octavian)",
-      "Julius Caesar",
-      "Nero",
-      "Marcus Aurelius"
-    ],
-    correctAnswer: "Augustus (Octavian)",
-    explanation: "Augustus (born Gaius Octavius) established the Roman Empire in 27 BCE as its first emperor, initiating two centuries of imperial stability known as the Pax Romana."
-  },
-  {
-    id: "hist-6",
-    category: "History",
-    difficulty: "Medium",
-    question: "What was the name of the first human-made satellite launched into orbit by the Soviet Union in October 1957, triggering the Space Race?",
-    options: [
-      "Sputnik 1",
-      "Vostok 1",
-      "Explorer 1",
-      "Apollo 11"
-    ],
-    correctAnswer: "Sputnik 1",
-    explanation: "The Soviet Union launched Sputnik 1 on October 4, 1957. The beach-ball-sized satellite successfully transmitted radio pulses back to Earth, marking the dawn of the Space Age."
-  },
-  {
-    id: "hist-7",
-    category: "History",
-    difficulty: "Hard",
-    question: "Which series of 1648 peace treaties ended the Thirty Years' War and established the modern doctrine of sovereign nation-states?",
-    options: [
-      "Peace of Westphalia",
-      "Treaty of Versailles",
-      "Congress of Vienna",
-      "Treaty of Utrecht"
-    ],
-    correctAnswer: "Peace of Westphalia",
-    explanation: "The Peace of Westphalia (1648) concluded the devastating European Thirty Years' War. It established 'Westphalian sovereignty,' the foundational international law concept that each nation-state has sovereignty over its territory and domestic affairs without external interference."
-  },
-  {
-    id: "hist-8",
-    category: "History",
-    difficulty: "Hard",
-    question: "Which iconic event on July 14, 1789, is celebrated as the spark and symbolic start of the French Revolution?",
-    options: [
-      "The Storming of the Bastille",
-      "The Reign of Terror",
-      "The Execution of King Louis XVI",
-      "The Tennis Court Oath"
-    ],
-    correctAnswer: "The Storming of the Bastille",
-    explanation: "On July 14, 1789, Parisian revolutionaries attacked the medieval royal fortress and armory known as the Bastille, marking a decisive uprising against royal despotism."
-  },
-  {
-    id: "hist-9",
-    category: "History",
-    difficulty: "Hard",
-    question: "Which Scottish philosopher and economist published 'The Wealth of Nations' in 1776, outlining the principles of free-market capitalism?",
-    options: [
-      "Adam Smith",
-      "David Ricardo",
-      "John Locke",
-      "Karl Marx"
-    ],
-    correctAnswer: "Adam Smith",
-    explanation: "Adam Smith published 'An Inquiry into the Nature and Causes of the Wealth of Nations' in 1776, formulating foundational economic doctrines including the division of labor and the 'invisible hand' of market competition."
-  },
-
-  // --------------------------------------------------------------------------
-  // CATEGORY: Programming
-  // --------------------------------------------------------------------------
-  {
-    id: "prog-1",
-    category: "Programming",
-    difficulty: "Easy",
-    question: "Which primitive data type is used in programming languages to represent logical values that can only be either true or false?",
-    options: [
-      "Boolean",
-      "Integer",
-      "String",
-      "Array"
-    ],
-    correctAnswer: "Boolean",
-    explanation: "A Boolean data type represents one of two possible truth values: true or false, named after mathematician George Boole who defined an algebraic system of logic."
-  },
-  {
-    id: "prog-2",
-    category: "Programming",
-    difficulty: "Easy",
-    question: "In modern JavaScript (ES6+), which declaration keyword creates a block-scoped variable that cannot be reassigned?",
-    options: [
-      "const",
-      "let",
-      "var",
-      "static"
-    ],
-    correctAnswer: "const",
-    explanation: "The 'const' keyword declares a block-scoped identifier whose binding cannot be reassigned. Note that for complex values like objects and arrays, the properties or elements may still be mutated."
-  },
-  {
-    id: "prog-3",
-    category: "Programming",
-    difficulty: "Easy",
-    question: "Which loop structure is conventionally preferred when the exact number of iterations is known before entering the loop?",
-    options: [
-      "for loop",
-      "while loop",
-      "do-while loop",
-      "infinite loop"
-    ],
-    correctAnswer: "for loop",
-    explanation: "A 'for loop' explicitly bundles initialization, condition checking, and step incrementation in its header, making it ideal for iterating over fixed ranges or array indices."
-  },
-  {
-    id: "prog-4",
-    category: "Programming",
-    difficulty: "Medium",
-    question: "Which fundamental data structure operates strictly on a Last-In, First-Out (LIFO) operational order?",
-    options: [
-      "Stack",
-      "Queue",
-      "Linked List",
-      "Hash Map"
-    ],
-    correctAnswer: "Stack",
-    explanation: "A Stack follows the LIFO (Last-In, First-Out) principle, where the most recently added element (pushed) is the first element to be removed (popped), analogous to a stack of dinner plates."
-  },
-  {
-    id: "prog-5",
-    category: "Programming",
-    difficulty: "Medium",
-    question: "What is the average time complexity for searching, insertion, and deletion in a balanced Binary Search Tree (such as an AVL or Red-Black Tree)?",
-    options: [
-      "O(log n)",
-      "O(n)",
-      "O(1)",
-      "O(n log n)"
-    ],
-    correctAnswer: "O(log n)",
-    explanation: "In a balanced BST with height h = log₂(n), each comparison discards roughly half of the remaining subtrees at each step, yielding an average and worst-case time complexity of O(log n)."
-  },
-  {
-    id: "prog-6",
-    category: "Programming",
-    difficulty: "Medium",
-    question: "Which core Object-Oriented Programming (OOP) pillar allows a derived class to acquire properties and methods from an existing base class?",
-    options: [
-      "Inheritance",
-      "Encapsulation",
-      "Polymorphism",
-      "Abstraction"
-    ],
-    correctAnswer: "Inheritance",
-    explanation: "Inheritance is the OOP mechanism enabling a subclass (child) to inherit fields, attributes, and behaviors from a superclass (parent), promoting clean code reuse and modularity."
-  },
-  {
-    id: "prog-7",
-    category: "Programming",
-    difficulty: "Hard",
-    question: "In systems programming (e.g., C or C++), what condition occurs when memory allocated on the heap is no longer needed or referenced, but is never released back to the operating system?",
-    options: [
-      "Memory leak",
-      "Buffer overflow",
-      "Segmentation fault",
-      "Deadlock"
-    ],
-    correctAnswer: "Memory leak",
-    explanation: "A memory leak happens when dynamically allocated memory on the heap is orphaned without calling free() or delete, causing the application to consume progressively more system RAM over time."
-  },
-  {
-    id: "prog-8",
-    category: "Programming",
-    difficulty: "Hard",
-    question: "In the JavaScript runtime architecture, what mechanism is responsible for checking if the Call Stack is empty and pushing queued callbacks from the Microtask and Task Queues into execution?",
-    options: [
-      "The Event Loop",
-      "The Garbage Collector",
-      "The JIT Compiler",
-      "The Thread Pool"
-    ],
-    correctAnswer: "The Event Loop",
-    explanation: "The Event Loop continuously inspects the Call Stack. When the Call Stack is clear of running execution contexts, it dequeues pending microtasks (e.g. Promises) and macrotasks (e.g. setTimeout) onto the stack for execution."
-  },
-  {
-    id: "prog-9",
-    category: "Programming",
-    difficulty: "Hard",
-    question: "Which algorithmic design paradigm solves complex optimization problems by breaking them down into overlapping subproblems and caching previously computed results (via memoization or tabulation)?",
-    options: [
-      "Dynamic Programming",
-      "Greedy Algorithm",
-      "Divide and Conquer",
-      "Backtracking"
-    ],
-    correctAnswer: "Dynamic Programming",
-    explanation: "Dynamic Programming (DP) is applied to problems exhibiting optimal substructure and overlapping subproblems, avoiding exponential re-computations by storing answers to smaller subproblems in a lookup table."
-  },
-
-  // --------------------------------------------------------------------------
-  // CATEGORY: English
-  // --------------------------------------------------------------------------
+  // ==========================================================================
+  // SUBJECT: English (Lesson 1: Grammar, Syntax & Literary Devices)
+  // ==========================================================================
   {
     id: "eng-1",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Easy",
     question: "Which part of speech modifies a verb, an adjective, or another adverb by indicating manner, time, degree, or place?",
     options: [
@@ -611,7 +185,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-2",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Easy",
     question: "Which of the following sentences demonstrates correct subject-verb agreement?",
     options: [
@@ -625,7 +201,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-3",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Easy",
     question: "What is the closest synonym for the word 'abundant'?",
     options: [
@@ -639,7 +217,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-4",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Medium",
     question: "Which literary device involves an explicit comparison between two dissimilar things using connecting words such as 'like' or 'as'?",
     options: [
@@ -653,7 +233,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-5",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Medium",
     question: "What type of sentence structure consists of exactly one independent clause and at least one dependent (subordinate) clause?",
     options: [
@@ -667,7 +249,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-6",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Medium",
     question: "Which of the following sentences is written in the passive voice?",
     options: [
@@ -681,7 +265,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-7",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Hard",
     question: "Which rhetorical device is characterized by the deliberate repetition of a word or phrase at the beginning of successive sentences or clauses?",
     options: [
@@ -695,7 +281,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-8",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Hard",
     question: "What is the precise meaning of the adjective 'ephemeral'?",
     options: [
@@ -709,7 +297,9 @@ const QUESTION_BANK = [
   },
   {
     id: "eng-9",
+    subject: "English",
     category: "English",
+    lesson: 1,
     difficulty: "Hard",
     question: "In George Orwell's classic dystopian novel '1984', what term designates the totalitarian artificial language engineered by the Party to restrict the range of human thought?",
     options: [
@@ -720,6 +310,522 @@ const QUESTION_BANK = [
     ],
     correctAnswer: "Newspeak",
     explanation: "Newspeak is the controlled language devised by the state of Oceania in Orwell's '1984' to limit expressive thought, eliminate nuances, and make unorthodox political ideas ('thoughtcrime') literally impossible to articulate."
+  },
+
+  // ==========================================================================
+  // SUBJECT: Science (Lesson 1: Earth, Climate & Ecology)
+  // ==========================================================================
+  {
+    id: "sci-1",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "What is the primary greenhouse gas released by human activities such as burning coal, oil, and natural gas?",
+    options: [
+      "Carbon dioxide (CO₂)",
+      "Methane (CH₄)",
+      "Nitrous oxide (N₂O)",
+      "Ozone (O₃)"
+    ],
+    correctAnswer: "Carbon dioxide (CO₂)",
+    explanation: "Carbon dioxide (CO₂) is the primary greenhouse gas emitted through human activities, accounting for about 76% of all global anthropogenic greenhouse gas emissions, mainly from burning fossil fuels."
+  },
+  {
+    id: "sci-2",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "Which layer of the atmosphere contains the protective ozone layer that filters out harmful solar ultraviolet (UV) radiation?",
+    options: [
+      "Stratosphere",
+      "Troposphere",
+      "Mesosphere",
+      "Thermosphere"
+    ],
+    correctAnswer: "Stratosphere",
+    explanation: "The stratosphere extends from roughly 10 km to 50 km above the Earth's surface and houses the ozone layer (O₃), which absorbs most of the Sun's harmful biological ultraviolet-B and ultraviolet-C radiation."
+  },
+  {
+    id: "sci-3",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "What renewable energy source harnesses the gravitational pull of the Moon and the Sun on Earth's oceans?",
+    options: [
+      "Tidal energy",
+      "Geothermal energy",
+      "Biomass energy",
+      "Hydroelectric dam energy"
+    ],
+    correctAnswer: "Tidal energy",
+    explanation: "Tidal power converts the kinetic and potential energy of ocean tides—driven primarily by gravitational interactions between Earth, the Moon, and the Sun—into clean electrical power."
+  },
+  {
+    id: "sci-4",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "What process in the hydrologic cycle describes the release of water vapor into the air from plant leaves?",
+    options: [
+      "Transpiration",
+      "Sublimation",
+      "Condensation",
+      "Percolation"
+    ],
+    correctAnswer: "Transpiration",
+    explanation: "Transpiration is the biological evaporation of water from plant leaves through microscopic pores called stomata, contributing significantly to atmospheric humidity and cloud formation."
+  },
+  {
+    id: "sci-5",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "Which term describes a species that has a disproportionately large impact on its natural environment relative to its abundance?",
+    options: [
+      "Keystone species",
+      "Invasive species",
+      "Pioneer species",
+      "Indicator species"
+    ],
+    correctAnswer: "Keystone species",
+    explanation: "A keystone species (such as sea otters in kelp forests or wolves in Yellowstone) plays a critical role in maintaining the structure and biodiversity of an ecological community."
+  },
+  {
+    id: "sci-6",
+    subject: "Science",
+    category: "Science",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "What is the primary danger associated with thawing Arctic permafrost in relation to global atmospheric temperature rise?",
+    options: [
+      "Microbial decay of previously frozen organic matter releases vast reservoirs of trapped methane and carbon dioxide",
+      "It causes global sea levels to instantly rise by over 50 meters due to subterranean ice collapse",
+      "It alters the polarity of the Earth's geomagnetic field",
+      "It cools the troposphere so abruptly that seasonal weather patterns permanently halt"
+    ],
+    correctAnswer: "Microbial decay of previously frozen organic matter releases vast reservoirs of trapped methane and carbon dioxide",
+    explanation: "Arctic permafrost contains an estimated 1,400 to 1,600 gigatons of carbon—about twice the amount currently in the atmosphere. Thawing allows microbes to decompose ancient organic remains, liberating huge quantities of CO₂ and CH₄."
+  },
+
+  // ==========================================================================
+  // SUBJECT: Physics (Lesson 1: Mechanics, Energy & Waves)
+  // ==========================================================================
+  {
+    id: "phys-1",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "According to Newton's Second Law of Motion, what is the mathematical formula relating force (F), mass (m), and acceleration (a)?",
+    options: [
+      "F = m × a",
+      "F = m / a",
+      "F = m + a",
+      "F = 0.5 × m × a²"
+    ],
+    correctAnswer: "F = m × a",
+    explanation: "Newton's Second Law states that the acceleration of an object is directly proportional to the net force acting upon it and inversely proportional to its mass: F = ma."
+  },
+  {
+    id: "phys-2",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "What is the approximate speed of light in a vacuum?",
+    options: [
+      "300,000 km/s (3 × 10⁸ m/s)",
+      "150,000 km/s (1.5 × 10⁸ m/s)",
+      "343 m/s",
+      "1,000,000 km/s"
+    ],
+    correctAnswer: "300,000 km/s (3 × 10⁸ m/s)",
+    explanation: "The speed of light in a vacuum is universally constant at approximately 299,792,458 meters per second (~3 × 10⁸ m/s), denoted by the constant 'c'."
+  },
+  {
+    id: "phys-3",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "What happens to the kinetic energy of a moving vehicle if its velocity is doubled while its mass remains constant?",
+    options: [
+      "It quadruples (increases by 4x)",
+      "It doubles (increases by 2x)",
+      "It remains identical",
+      "It triples (increases by 3x)"
+    ],
+    correctAnswer: "It quadruples (increases by 4x)",
+    explanation: "Kinetic energy is given by KE = (1/2)mv². Because velocity is squared, doubling the speed causes (2v)² = 4v², quadrupling the kinetic energy."
+  },
+  {
+    id: "phys-4",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "Which scientific principle explains why the top curved surface of an airplane wing experiences lower air pressure than the flat bottom surface?",
+    options: [
+      "Bernoulli's Principle",
+      "Archimedes' Principle",
+      "Pascal's Principle",
+      "Hooke's Law"
+    ],
+    correctAnswer: "Bernoulli's Principle",
+    explanation: "Bernoulli's Principle states that as the speed of a moving fluid (or air) increases, internal fluid pressure decreases simultaneously, creating aerodynamic lift."
+  },
+  {
+    id: "phys-5",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "According to Ohm's Law and Joule's Law, what is the electrical power (P) dissipated as heat across a resistor of resistance R carrying current I?",
+    options: [
+      "P = I² × R",
+      "P = I / R",
+      "P = I × R²",
+      "P = I² / R"
+    ],
+    correctAnswer: "P = I² × R",
+    explanation: "Electric power is P = V × I. Substituting Ohm's Law (V = I × R) yields Joule's law of heating: P = (I × R) × I = I²R."
+  },
+  {
+    id: "phys-6",
+    subject: "Physics",
+    category: "Physics",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "Which fundamental law of thermodynamics asserts that the total entropy of an isolated physical system can never decrease over time?",
+    options: [
+      "The Second Law of Thermodynamics",
+      "The First Law of Thermodynamics",
+      "The Third Law of Thermodynamics",
+      "The Zeroth Law of Thermodynamics"
+    ],
+    correctAnswer: "The Second Law of Thermodynamics",
+    explanation: "The Second Law of Thermodynamics dictates that isolated systems naturally evolve towards thermodynamic equilibrium and maximum entropy (disorder)."
+  },
+
+  // ==========================================================================
+  // SUBJECT: Chemistry (Lesson 1: Atoms, Bonds & Reactions)
+  // ==========================================================================
+  {
+    id: "chem-1",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "What is the chemical symbol for the element Gold in the Periodic Table?",
+    options: [
+      "Au",
+      "Ag",
+      "Fe",
+      "Gd"
+    ],
+    correctAnswer: "Au",
+    explanation: "The chemical symbol for Gold is Au, derived from the classical Latin word 'Aurum', meaning shining dawn or glow."
+  },
+  {
+    id: "chem-2",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "A chemical solution has a measured pH reading of 3.0. How is this solution categorized?",
+    options: [
+      "Acidic",
+      "Neutral",
+      "Alkaline (Basic)",
+      "Saline"
+    ],
+    correctAnswer: "Acidic",
+    explanation: "On the pH scale (0 to 14), readings lower than 7 indicate acidity, 7 represents neutral pure water, and values higher than 7 indicate alkalinity."
+  },
+  {
+    id: "chem-3",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "Which type of chemical bond forms when valence electrons are shared between two nonmetal atoms?",
+    options: [
+      "Covalent bond",
+      "Ionic bond",
+      "Metallic bond",
+      "Hydrogen bond"
+    ],
+    correctAnswer: "Covalent bond",
+    explanation: "A covalent bond consists of the mutual sharing of one or more electron pairs between two atoms, unlike ionic bonds which involve electron transfer."
+  },
+  {
+    id: "chem-4",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "What is Avogadro's constant, specifying the number of elementary entities in exactly one mole of substance?",
+    options: [
+      "6.022 × 10²³",
+      "3.141 × 10²³",
+      "1.602 × 10⁻¹⁹",
+      "9.807 × 10⁸"
+    ],
+    correctAnswer: "6.022 × 10²³",
+    explanation: "Avogadro's constant is approximately 6.02214076 × 10²³ mol⁻¹, providing the scale factor converting individual atomic masses into grams."
+  },
+  {
+    id: "chem-5",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "What term describes a chemical reaction that releases net thermal energy to its surroundings, typically resulting in a temperature increase?",
+    options: [
+      "Exothermic reaction",
+      "Endothermic reaction",
+      "Isothermal reaction",
+      "Adiabatic reaction"
+    ],
+    correctAnswer: "Exothermic reaction",
+    explanation: "In an exothermic reaction, the standard enthalpy change (ΔH) is negative because the bond formation energy in products exceeds the bond dissociation energy in reactants."
+  },
+  {
+    id: "chem-6",
+    subject: "Chemistry",
+    category: "Chemistry",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "In oxidation-reduction (redox) chemistry, what process occurs when an atom, ion, or molecule loses one or more electrons?",
+    options: [
+      "Oxidation",
+      "Reduction",
+      "Precipitation",
+      "Sublimation"
+    ],
+    correctAnswer: "Oxidation",
+    explanation: "Oxidation corresponds to the loss of electrons (or an increase in oxidation state), remembered by the standard rule: Oxidation Is Loss (OIL), Reduction Is Gain (RIG)."
+  },
+
+  // ==========================================================================
+  // SUBJECT: Biology (Lesson 1: Cell Biology, Enzymes & Genetics)
+  // ==========================================================================
+  {
+    id: "bio-1",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "Which organelle is universally referred to as the 'powerhouse of the cell' due to its generation of adenosine triphosphate (ATP)?",
+    options: [
+      "Mitochondria",
+      "Ribosome",
+      "Endoplasmic Reticulum",
+      "Golgi Apparatus"
+    ],
+    correctAnswer: "Mitochondria",
+    explanation: "Mitochondria are double-membrane cellular organelles that produce the vast majority of biochemical cellular energy (ATP) through aerobic cellular respiration."
+  },
+  {
+    id: "bio-2",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "What green photosynthetic pigment inside plant chloroplasts absorbs light to energize photosynthesis?",
+    options: [
+      "Chlorophyll",
+      "Carotenoid",
+      "Anthocyanin",
+      "Hemoglobin"
+    ],
+    correctAnswer: "Chlorophyll",
+    explanation: "Chlorophyll absorbs blue and red electromagnetic wavelengths from solar radiation while reflecting green light, transferring photon energy into chemical sugars."
+  },
+  {
+    id: "bio-3",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "Which biological model describes the cell membrane as a flexible phospholipid bilayer embedded with mobile transport proteins?",
+    options: [
+      "Fluid Mosaic Model",
+      "Lock and Key Model",
+      "Double Helix Model",
+      "Central Dogma Model"
+    ],
+    correctAnswer: "Fluid Mosaic Model",
+    explanation: "The Fluid Mosaic Model describes the plasma membrane structure as a fluid mosaic of phospholipids, cholesterol, and transport proteins that can move laterally."
+  },
+  {
+    id: "bio-4",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "What biological macromolecule functions as an organic catalyst to accelerate biochemical reactions without being consumed in the process?",
+    options: [
+      "Enzymes",
+      "Phospholipids",
+      "Polysaccharides",
+      "Triglycerides"
+    ],
+    correctAnswer: "Enzymes",
+    explanation: "Enzymes are specialized protein catalysts that accelerate metabolic reactions by orders of magnitude by drastically lowering their activation energy barrier."
+  },
+  {
+    id: "bio-5",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "In eukaryotic reproduction, which specialized cell division process produces four genetically diverse haploid gametes from a single diploid cell?",
+    options: [
+      "Meiosis",
+      "Mitosis",
+      "Binary Fission",
+      "Budding"
+    ],
+    correctAnswer: "Meiosis",
+    explanation: "Meiosis consists of two successive nuclear divisions (Meiosis I and II) that reduce chromosome ploidy from diploid (2n) to haploid (n), creating gametes with genetic recombination."
+  },
+  {
+    id: "bio-6",
+    subject: "Biology",
+    category: "Biology",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "According to Chargaff's rules of DNA base pairing in double-stranded DNA molecules, which nucleotide base pairs specifically with Cytosine (C)?",
+    options: [
+      "Guanine (G)",
+      "Adenine (A)",
+      "Thymine (T)",
+      "Uracil (U)"
+    ],
+    correctAnswer: "Guanine (G)",
+    explanation: "In DNA, Cytosine (C) forms three hydrogen bonds with Guanine (G), while Adenine (A) forms two hydrogen bonds with Thymine (T)."
+  },
+
+  // ==========================================================================
+  // SUBJECT: Computing (Lesson 1: Data Structures, Algorithms & Web Architecture)
+  // ==========================================================================
+  {
+    id: "comp-1",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "Which primitive data type is used in programming languages to represent logical values that can only be either true or false?",
+    options: [
+      "Boolean",
+      "Integer",
+      "String",
+      "Array"
+    ],
+    correctAnswer: "Boolean",
+    explanation: "A Boolean data type represents one of two possible truth values: true or false, named after mathematician George Boole who defined an algebraic system of logic."
+  },
+  {
+    id: "comp-2",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "In modern JavaScript (ES6+), which declaration keyword creates a block-scoped variable that cannot be reassigned?",
+    options: [
+      "const",
+      "let",
+      "var",
+      "static"
+    ],
+    correctAnswer: "const",
+    explanation: "The 'const' keyword declares a block-scoped identifier whose binding cannot be reassigned. Complex objects and arrays declared with const may still have their contents mutated."
+  },
+  {
+    id: "comp-3",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Easy",
+    question: "Which fundamental data structure operates strictly on a Last-In, First-Out (LIFO) operational order?",
+    options: [
+      "Stack",
+      "Queue",
+      "Linked List",
+      "Hash Map"
+    ],
+    correctAnswer: "Stack",
+    explanation: "A Stack follows the LIFO principle: elements pushed last onto the top of the stack are the first ones removed (popped), analogous to a stack of trays."
+  },
+  {
+    id: "comp-4",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "What is the average time complexity for searching, insertion, and deletion in a balanced Binary Search Tree (such as an AVL or Red-Black Tree)?",
+    options: [
+      "O(log n)",
+      "O(n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    correctAnswer: "O(log n)",
+    explanation: "In a balanced BST with height h = log₂(n), each comparison discards roughly half of the remaining subtrees at each step, yielding an average time complexity of O(log n)."
+  },
+  {
+    id: "comp-5",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Medium",
+    question: "Which core Object-Oriented Programming (OOP) pillar allows a derived class to acquire properties and methods from an existing base class?",
+    options: [
+      "Inheritance",
+      "Encapsulation",
+      "Polymorphism",
+      "Abstraction"
+    ],
+    correctAnswer: "Inheritance",
+    explanation: "Inheritance enables a subclass (child) to inherit fields, attributes, and behaviors from a superclass (parent), promoting clean code reuse and modularity."
+  },
+  {
+    id: "comp-6",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "In the JavaScript runtime architecture, what mechanism is responsible for checking if the Call Stack is empty and pushing queued callbacks from the Microtask and Task Queues into execution?",
+    options: [
+      "The Event Loop",
+      "The Garbage Collector",
+      "The JIT Compiler",
+      "The Thread Pool"
+    ],
+    correctAnswer: "The Event Loop",
+    explanation: "The Event Loop continuously inspects the Call Stack. When the Call Stack is clear of running execution contexts, it dequeues pending microtasks and macrotasks onto the stack for execution."
+  },
+  {
+    id: "comp-7",
+    subject: "Computing",
+    category: "Computing",
+    lesson: 1,
+    difficulty: "Hard",
+    question: "Which algorithmic design paradigm solves complex optimization problems by breaking them down into overlapping subproblems and caching previously computed results (via memoization or tabulation)?",
+    options: [
+      "Dynamic Programming",
+      "Greedy Algorithm",
+      "Divide and Conquer",
+      "Backtracking"
+    ],
+    correctAnswer: "Dynamic Programming",
+    explanation: "Dynamic Programming (DP) is applied to problems exhibiting optimal substructure and overlapping subproblems, avoiding exponential re-computations by storing answers to smaller subproblems in a lookup table."
   }
 ];
 

@@ -1,14 +1,14 @@
 /**
- * PrepQuiz - Interactive Student Exam Practice Portal
- * Core Client-Side Application Logic with Gamification Engine (XP, Streaks & Achievements)
- * Pure Vanilla JavaScript (No backend required)
+ * PrepQuiz - Learning Adventure Dashboard & Quiz Application
+ * Matches the reference design with Curriculum Subject Tracking,
+ * Multi-Lesson Mastery, Timers, Synthesized Sound Effects, and Gamification.
  */
 
 (function () {
   "use strict";
 
   // ==========================================================================
-  // 1. Audio Synthesis Engine (Web Audio API - Pure synthesized sound)
+  // 1. Audio Synthesis Engine (Pure Web Audio API)
   // ==========================================================================
   const SoundEngine = {
     enabled: true,
@@ -31,11 +31,10 @@
 
         const osc = this.audioCtx.createOscillator();
         const gain = this.audioCtx.createGain();
-
         const startTime = this.audioCtx.currentTime + delay;
+
         osc.type = type;
         osc.frequency.setValueAtTime(frequency, startTime);
-
         gain.gain.setValueAtTime(0.12, startTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
 
@@ -45,7 +44,7 @@
         osc.start(startTime);
         osc.stop(startTime + duration);
       } catch (err) {
-        console.warn("Audio error:", err);
+        console.warn("Audio playback error:", err);
       }
     },
 
@@ -60,22 +59,11 @@
       this.playTone(220.00, "triangle", 0.25, 0.12); // A3
     },
 
-    tick() {
-      this.playTone(880, "sine", 0.03, 0);          // High click
-    },
-
     finish() {
       this.playTone(440, "sine", 0.1, 0);
       this.playTone(554.37, "sine", 0.1, 0.09);
       this.playTone(659.25, "sine", 0.15, 0.18);
       this.playTone(880, "sine", 0.35, 0.27);
-    },
-
-    levelUp() {
-      this.playTone(440, "sine", 0.1, 0);
-      this.playTone(554.37, "sine", 0.1, 0.08);
-      this.playTone(659.25, "sine", 0.1, 0.16);
-      this.playTone(880, "sine", 0.3, 0.24);
     },
 
     achievement() {
@@ -87,45 +75,105 @@
   };
 
   // ==========================================================================
-  // 2. Gamification Engine (XP, Levels, Streaks & Achievements)
+  // 2. Achievements Catalog & Gamification Engine
   // ==========================================================================
-  const LEVEL_TIERS = [
-    { level: 1, title: "Novice Scholar", minXP: 0, maxXP: 100 },
-    { level: 2, title: "Apprentice Thinker", minXP: 100, maxXP: 250 },
-    { level: 3, title: "Knowledge Seeker", minXP: 250, maxXP: 450 },
-    { level: 4, title: "Master Student", minXP: 450, maxXP: 700 },
-    { level: 5, title: "Academic Pro", minXP: 700, maxXP: 1000 },
-    { level: 6, title: "Quiz Grandmaster", minXP: 1000, maxXP: 999999 }
-  ];
-
   const ACHIEVEMENTS_CATALOG = [
-    { id: "first_quiz", title: "First Step", desc: "Complete your first practice quiz", icon: "🌟", reward: 50 },
+    { id: "first_quiz", title: "First Step", desc: "Complete your first lesson quiz", icon: "🌟", reward: 50 },
     { id: "streak_3", title: "Hot Streak", desc: "Answer 3 questions correctly in a row", icon: "🔥", reward: 30 },
     { id: "streak_5", title: "Sharpshooter", desc: "Answer 5 questions correctly in a row", icon: "🎯", reward: 60 },
     { id: "speed_demon", title: "Speed Demon", desc: "Answer any question correctly in under 5 seconds", icon: "⚡", reward: 40 },
-    { id: "perfect_score", title: "Flawless Victory", desc: "Score 100% on a practice quiz", icon: "💯", reward: 100 },
-    { id: "polymath", title: "Renaissance Scholar", desc: "Complete quizzes in at least 3 distinct subjects", icon: "🌐", reward: 75 },
+    { id: "perfect_score", title: "Flawless Victory", desc: "Score 100% on any practice lesson", icon: "💯", reward: 100 },
+    { id: "polymath", title: "Renaissance Scholar", desc: "Complete lessons in at least 3 distinct subjects", icon: "🌐", reward: 75 },
     { id: "tactician", title: "Strategic Review", desc: "Flag a question and complete your quiz", icon: "⚑", reward: 35 },
-    { id: "level_up", title: "Rising Star", desc: "Reach Level 2 in your study progression", icon: "🏆", reward: 50 }
+    { id: "master_points", title: "Scholar Prodigy", desc: "Accumulate 200 total learning points", icon: "🏆", reward: 80 }
   ];
 
+  // Subject metadata definitions matching the screenshot
+  const SUBJECTS_CONFIG = {
+    "Mathematics": {
+      totalLessons: 2,
+      colorClass: "bg-blue",
+      iconChar: "📐",
+      lessons: [
+        { id: 1, title: "Lesson 1: Algebra & Geometry Fundamentals", desc: "Linear equations, triangles & percentage discounts" },
+        { id: 2, title: "Lesson 2: Advanced Problem Solving", desc: "Quadratics, Pythagoras, probability & logarithms" }
+      ]
+    },
+    "English": {
+      totalLessons: 1,
+      colorClass: "bg-emerald",
+      iconChar: "📖",
+      lessons: [
+        { id: 1, title: "Lesson 1: Grammar, Syntax & Literary Devices", desc: "Parts of speech, agreement, passive voice & rhetorical devices" }
+      ]
+    },
+    "Science": {
+      totalLessons: 1,
+      colorClass: "bg-purple",
+      iconChar: "⚛️",
+      lessons: [
+        { id: 1, title: "Lesson 1: Earth, Climate & Ecosystems", desc: "Atmosphere, greenhouse gases, transpiration & keystone species" }
+      ]
+    },
+    "Physics": {
+      totalLessons: 1,
+      colorClass: "bg-rose",
+      iconChar: "🧲",
+      lessons: [
+        { id: 1, title: "Lesson 1: Mechanics, Energy & Waves", desc: "Newton's laws, light velocity, kinetic energy & thermodynamics" }
+      ]
+    },
+    "Chemistry": {
+      totalLessons: 1,
+      colorClass: "bg-orange",
+      iconChar: "🧪",
+      lessons: [
+        { id: 1, title: "Lesson 1: Atoms, Bonds & Reactions", desc: "Periodic elements, pH scale, covalent bonds & redox oxidation" }
+      ]
+    },
+    "Biology": {
+      totalLessons: 1,
+      colorClass: "bg-teal",
+      iconChar: "🔬",
+      lessons: [
+        { id: 1, title: "Lesson 1: Cell Biology & Genetics", desc: "Mitochondria, fluid mosaic model, meiosis & DNA base pairing" }
+      ]
+    },
+    "Computing": {
+      totalLessons: 1,
+      colorClass: "bg-indigo",
+      iconChar: "💻",
+      lessons: [
+        { id: 1, title: "Lesson 1: Data Structures & Algorithms", desc: "Boolean logic, stacks, binary search trees & event loop" }
+      ]
+    }
+  };
+
   const Gamification = {
-    STORAGE_KEY: "prepmaster_gamification_v1",
+    STORAGE_KEY: "prepmaster_progress_v3",
 
     state: {
-      totalXP: 0,
-      dailyStreak: 1,
+      totalPoints: 0,
+      dailyStreak: 0,
       lastActiveDate: null,
-      bestInQuizStreak: 0,
-      quizzesCompleted: 0,
-      subjectsPracticed: [],
-      unlockedAchievements: {} // { [id]: unlockDateString }
+      todayLessonsCompleted: 0,
+      dailyGoal: 1,
+      completedLessons: {
+        "Mathematics": [],
+        "English": [],
+        "Science": [],
+        "Physics": [],
+        "Chemistry": [],
+        "Biology": [],
+        "Computing": []
+      },
+      unlockedAchievements: {}
     },
 
-    // Session-specific tracking
+    // Session tracking
     currentInQuizStreak: 0,
-    sessionTotalXPGained: 0,
-    sessionXPBreakdown: [],
+    sessionPointsGained: 0,
+    sessionPointsBreakdown: [],
     questionStartTime: 0,
     newlyUnlockedThisQuiz: [],
 
@@ -139,9 +187,9 @@
       } catch (err) {
         console.warn("Could not load gamification state:", err);
       }
-      this.updateDailyStreak();
+      this.updateDailyDateCheck();
       this.save();
-      this.updateUI();
+      this.updateDashboardUI();
     },
 
     save() {
@@ -152,74 +200,73 @@
       }
     },
 
-    updateDailyStreak() {
+    updateDailyDateCheck() {
       const today = new Date().toISOString().slice(0, 10);
       if (!this.state.lastActiveDate) {
         this.state.lastActiveDate = today;
-        this.state.dailyStreak = 1;
         return;
       }
 
-      if (this.state.lastActiveDate === today) {
-        // Already active today
-        return;
-      }
+      if (this.state.lastActiveDate !== today) {
+        const lastDate = new Date(this.state.lastActiveDate);
+        const currentDate = new Date(today);
+        const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
 
-      const lastDate = new Date(this.state.lastActiveDate);
-      const currentDate = new Date(today);
-      const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
-
-      if (diffDays === 1) {
-        this.state.dailyStreak += 1;
-      } else if (diffDays > 1) {
-        this.state.dailyStreak = 1;
-      }
-      this.state.lastActiveDate = today;
-    },
-
-    getLevelInfo(xp = this.state.totalXP) {
-      let currentTier = LEVEL_TIERS[0];
-      for (const tier of LEVEL_TIERS) {
-        if (xp >= tier.minXP) {
-          currentTier = tier;
-        } else {
-          break;
+        if (diffDays === 1) {
+          // Continuous day
+        } else if (diffDays > 1) {
+          this.state.dailyStreak = 0;
         }
+        this.state.todayLessonsCompleted = 0; // Reset daily lessons completed on a new day
+        this.state.lastActiveDate = today;
       }
-
-      const nextTier = LEVEL_TIERS.find(t => t.level === currentTier.level + 1) || currentTier;
-      const range = nextTier.minXP - currentTier.minXP;
-      const progressInTier = Math.max(0, xp - currentTier.minXP);
-      const percent = currentTier.level === 6 ? 100 : Math.min(100, Math.round((progressInTier / (range || 1)) * 100));
-
-      return {
-        level: currentTier.level,
-        title: currentTier.title,
-        currentXP: xp,
-        nextLevelXP: nextTier.minXP,
-        percent: percent
-      };
     },
 
-    addXP(amount, reason = "Practice") {
-      const oldLevelInfo = this.getLevelInfo();
-      this.state.totalXP += amount;
-      this.sessionTotalXPGained += amount;
-      this.sessionXPBreakdown.push({ label: reason, amount });
+    recordLessonCompletion(subject, lessonId) {
+      this.updateDailyDateCheck();
 
-      const newLevelInfo = this.getLevelInfo();
-      if (newLevelInfo.level > oldLevelInfo.level) {
-        SoundEngine.levelUp();
-        showToast(`🎉 Level Up! You reached Level ${newLevelInfo.level}: ${newLevelInfo.title}!`, "🏆");
-        this.unlockAchievement("level_up");
+      // Ensure streak is at least 1 when completing a lesson
+      if (this.state.dailyStreak === 0) {
+        this.state.dailyStreak = 1;
+      }
+
+      this.state.todayLessonsCompleted += 1;
+
+      if (!this.state.completedLessons[subject]) {
+        this.state.completedLessons[subject] = [];
+      }
+      if (!this.state.completedLessons[subject].includes(lessonId)) {
+        this.state.completedLessons[subject].push(lessonId);
       }
 
       this.save();
-      this.updateUI();
+      this.updateDashboardUI();
+    },
+
+    getTotalCompletedLessonsCount() {
+      let count = 0;
+      Object.keys(SUBJECTS_CONFIG).forEach(subj => {
+        const done = this.state.completedLessons[subj] || [];
+        count += done.length;
+      });
+      return count;
+    },
+
+    addPoints(amount, label = "Practice Bonus") {
+      this.state.totalPoints += amount;
+      this.sessionPointsGained += amount;
+      this.sessionPointsBreakdown.push({ label, amount });
+
+      if (this.state.totalPoints >= 200) {
+        this.unlockAchievement("master_points");
+      }
+
+      this.save();
+      this.updateDashboardUI();
     },
 
     unlockAchievement(id) {
-      if (this.state.unlockedAchievements[id]) return; // Already unlocked
+      if (this.state.unlockedAchievements[id]) return;
 
       const item = ACHIEVEMENTS_CATALOG.find(a => a.id === id);
       if (!item) return;
@@ -227,49 +274,97 @@
       this.state.unlockedAchievements[id] = new Date().toISOString();
       this.newlyUnlockedThisQuiz.push(item);
 
-      // Award achievement XP
-      this.addXP(item.reward, `Achievement: ${item.title}`);
+      this.addPoints(item.reward, `Achievement: ${item.title}`);
       SoundEngine.achievement();
       showToast(`🏆 Achievement Unlocked: ${item.title} (+${item.reward} XP)!`, item.icon);
 
       this.save();
-      this.updateUI();
+      this.updateDashboardUI();
     },
 
-    updateUI() {
-      const info = this.getLevelInfo();
-      const unlockedCount = Object.keys(this.state.unlockedAchievements).length;
+    updateDashboardUI() {
+      // 1. Time-based dynamic greeting
+      const hour = new Date().getHours();
+      let greeting = "Good afternoon!";
+      if (hour < 12) greeting = "Good morning!";
+      else if (hour >= 18) greeting = "Good evening!";
+      if (dom.greetingHeading) dom.greetingHeading.textContent = greeting;
 
-      // Header pills
-      if (dom.headerXpVal) dom.headerXpVal.textContent = this.state.totalXP;
+      // 2. Top Header Badges
       if (dom.headerStreakVal) dom.headerStreakVal.textContent = this.state.dailyStreak;
+      if (dom.headerXpVal) dom.headerXpVal.textContent = this.state.totalPoints;
 
-      // Home Screen Hub
-      if (dom.hubLevelBadge) dom.hubLevelBadge.textContent = `Level ${info.level}`;
-      if (dom.hubLevelTitle) dom.hubLevelTitle.textContent = info.title;
-      if (dom.hubXpProgressText) {
-        dom.hubXpProgressText.textContent = info.level === 6 
-          ? `${this.state.totalXP} XP (Max Level)` 
-          : `${info.currentXP} / ${info.nextLevelXP} XP to Level ${info.level + 1}`;
+      // 3. 4 Metrics Cards
+      if (dom.metricPointsVal) dom.metricPointsVal.textContent = this.state.totalPoints;
+      if (dom.metricStreakVal) dom.metricStreakVal.textContent = `${this.state.dailyStreak} day${this.state.dailyStreak === 1 ? "" : "s"}`;
+      
+      const totalCompleted = this.getTotalCompletedLessonsCount();
+      if (dom.metricLessonsVal) dom.metricLessonsVal.textContent = `${totalCompleted}/8`;
+      if (dom.metricTodayVal) dom.metricTodayVal.textContent = this.state.todayLessonsCompleted;
+
+      // 4. Update each of the 7 Subject Cards
+      Object.keys(SUBJECTS_CONFIG).forEach(subj => {
+        const config = SUBJECTS_CONFIG[subj];
+        const completedArr = this.state.completedLessons[subj] || [];
+        const completedCount = completedArr.length;
+        const total = config.totalLessons;
+        const percent = Math.min(100, Math.round((completedCount / total) * 100));
+
+        const prefix = subj.toLowerCase().slice(0, 4);
+        const statusEl = document.getElementById(`${prefix}-status-text`) || 
+                         (subj === "Mathematics" ? document.getElementById("math-status-text") :
+                          subj === "English" ? document.getElementById("eng-status-text") :
+                          subj === "Science" ? document.getElementById("sci-status-text") :
+                          subj === "Physics" ? document.getElementById("phys-status-text") :
+                          subj === "Chemistry" ? document.getElementById("chem-status-text") :
+                          subj === "Biology" ? document.getElementById("bio-status-text") :
+                          document.getElementById("comp-status-text"));
+
+        const fillEl = document.getElementById(`${prefix}-progress-fill`) ||
+                       (subj === "Mathematics" ? document.getElementById("math-progress-fill") :
+                        subj === "English" ? document.getElementById("eng-progress-fill") :
+                        subj === "Science" ? document.getElementById("sci-progress-fill") :
+                        subj === "Physics" ? document.getElementById("phys-progress-fill") :
+                        subj === "Chemistry" ? document.getElementById("chem-progress-fill") :
+                        subj === "Biology" ? document.getElementById("bio-progress-fill") :
+                        document.getElementById("comp-progress-fill"));
+
+        const pctEl = document.getElementById(`${prefix}-progress-pct`) ||
+                      (subj === "Mathematics" ? document.getElementById("math-progress-pct") :
+                       subj === "English" ? document.getElementById("eng-progress-pct") :
+                       subj === "Science" ? document.getElementById("sci-progress-pct") :
+                       subj === "Physics" ? document.getElementById("phys-progress-pct") :
+                       subj === "Chemistry" ? document.getElementById("chem-progress-pct") :
+                       subj === "Biology" ? document.getElementById("bio-progress-pct") :
+                       document.getElementById("comp-progress-pct"));
+
+        if (statusEl) statusEl.textContent = `${completedCount} of ${total} lesson${total > 1 ? "s" : ""} completed`;
+        if (fillEl) fillEl.style.width = `${percent}%`;
+        if (pctEl) pctEl.textContent = `${percent}% complete`;
+      });
+
+      // 5. Daily Goal progress in modal
+      if (dom.goalProgressText) {
+        dom.goalProgressText.textContent = `${this.state.todayLessonsCompleted} / ${this.state.dailyGoal} Completed`;
       }
-      if (dom.hubXpFill) dom.hubXpFill.style.width = `${info.percent}%`;
-      if (dom.hubDailyStreak) dom.hubDailyStreak.textContent = `${this.state.dailyStreak} Day${this.state.dailyStreak > 1 ? "s" : ""}`;
-      if (dom.hubTotalXp) dom.hubTotalXp.textContent = `${this.state.totalXP} XP`;
-      if (dom.hubBestStreak) dom.hubBestStreak.textContent = this.state.bestInQuizStreak;
-      if (dom.hubAchievementsCount) dom.hubAchievementsCount.textContent = `${unlockedCount}/${ACHIEVEMENTS_CATALOG.length}`;
-      if (dom.modalAchievementsUnlockedCount) dom.modalAchievementsUnlockedCount.textContent = unlockedCount;
+      if (dom.goalProgressFill) {
+        const goalPct = Math.min(100, Math.round((this.state.todayLessonsCompleted / (this.state.dailyGoal || 1)) * 100));
+        dom.goalProgressFill.style.width = `${goalPct}%`;
+      }
     },
 
     renderAchievementsModal() {
       if (!dom.achievementsListModal) return;
       dom.achievementsListModal.innerHTML = "";
+      const unlockedCount = Object.keys(this.state.unlockedAchievements).length;
+      if (dom.modalAchievementsUnlockedCount) dom.modalAchievementsUnlockedCount.textContent = unlockedCount;
 
       ACHIEVEMENTS_CATALOG.forEach(ach => {
         const isUnlocked = Boolean(this.state.unlockedAchievements[ach.id]);
         const card = document.createElement("div");
         card.className = `achievement-card ${isUnlocked ? "unlocked" : "locked"}`;
 
-        let statusText = isUnlocked 
+        const statusText = isUnlocked 
           ? `✓ Unlocked • +${ach.reward} XP` 
           : `🔒 Locked • Reward: +${ach.reward} XP`;
 
@@ -278,15 +373,42 @@
           <div class="achieve-info">
             <div class="achieve-title">
               ${ach.title}
-              ${isUnlocked ? '<span style="font-size: 0.75rem; color: #10b981; font-weight: 800;">✓</span>' : ''}
+              ${isUnlocked ? '<span style="font-size: 0.75rem; color: #16a34a; font-weight: 800;">✓</span>' : ''}
             </div>
             <div class="achieve-desc">${ach.desc}</div>
             <div class="achieve-meta">${statusText}</div>
           </div>
           <div class="achieve-reward-badge">+${ach.reward} XP</div>
         `;
-
         dom.achievementsListModal.appendChild(card);
+      });
+    },
+
+    renderLeaderboardModal() {
+      if (!dom.leaderboardListItems) return;
+      dom.leaderboardListItems.innerHTML = "";
+
+      const users = [
+        { rank: 1, name: "Elena Rostova", points: 840, avatar: "👩‍🎓", isUser: false },
+        { rank: 2, name: "Marcus Chen", points: 620, avatar: "👨‍💻", isUser: false },
+        { rank: 3, name: "You (Scholar)", points: this.state.totalPoints, avatar: "🤖", isUser: true },
+        { rank: 4, name: "Sophia Alvarez", points: 310, avatar: "🔬", isUser: false },
+        { rank: 5, name: "Liam O'Connor", points: 190, avatar: "📚", isUser: false }
+      ];
+
+      // Sort dynamic users
+      users.sort((a, b) => b.points - a.points);
+      users.forEach((u, idx) => {
+        u.rank = idx + 1;
+        const row = document.createElement("div");
+        row.className = `leaderboard-row ${u.isUser ? "current-user" : ""}`;
+        row.innerHTML = `
+          <div class="rank-badge rank-${u.rank <= 3 ? u.rank : 'n'}">#${u.rank}</div>
+          <div class="leader-avatar">${u.avatar}</div>
+          <div class="leader-name">${u.name} ${u.isUser ? '<span style="font-size: 0.72rem; color: #2563eb; font-weight: 700;">(You)</span>' : ''}</div>
+          <div class="leader-points">${u.points} XP</div>
+        `;
+        dom.leaderboardListItems.appendChild(row);
       });
     }
   };
@@ -295,13 +417,11 @@
   // 3. Application State
   // ==========================================================================
   const state = {
-    // Configuration
-    category: "Understanding Global Warming: A Quiz",
+    // Current Setup
+    subject: "Mathematics",
+    lesson: 1,
     difficulty: "ALL",
-    timerEnabled: true,
-    timerMode: "quiz", // "quiz" | "question"
-    wholeQuizSecondsTotal: 300,
-    perQuestionSecondsTotal: 30,
+    timerMode: "5min", // "5min" | "perQuestion" | "none"
 
     // Active Quiz Session
     sessionQuestions: [],
@@ -311,11 +431,10 @@
 
     // Timers
     globalTimerInterval: null,
-    globalSecondsRemaining: 0,
+    globalSecondsRemaining: 300,
     questionTimerInterval: null,
-    questionSecondsRemaining: 0,
+    questionSecondsRemaining: 30,
 
-    // Modal Callback
     pendingConfirmAction: null
   };
 
@@ -327,44 +446,91 @@
     homeView: document.getElementById("home-view"),
     quizView: document.getElementById("quiz-view"),
     resultsView: document.getElementById("results-view"),
+    insightsView: document.getElementById("insights-view"),
 
-    // Header & Global
-    headerXpBadge: document.getElementById("header-xp-badge"),
-    headerXpVal: document.getElementById("header-xp-val"),
+    // Global Top Navigation & Insights View Switchers
+    navBtnPractice: document.getElementById("nav-btn-practice"),
+    navBtnInsights: document.getElementById("nav-btn-insights"),
+    btnQuickInsights: document.getElementById("btn-quick-insights"),
+    railBtnPractice: document.getElementById("rail-btn-practice"),
+    railIconBtns: document.querySelectorAll(".insights-nav-rail .rail-icon-btn"),
+    insightsTabBtns: document.querySelectorAll(".insights-tab-btn"),
+    insightsDateDisplay: document.getElementById("insights-date-display"),
+    insightsSearchBtn: document.querySelector(".insights-search-btn"),
+    insightsTargetPct: document.getElementById("insights-target-pct"),
+    insightsMasteryHours: document.getElementById("insights-mastery-hours"),
+
+    // Dashboard Header
+    greetingHeading: document.getElementById("greeting-heading"),
     headerStreakBadge: document.getElementById("header-streak-badge"),
     headerStreakVal: document.getElementById("header-streak-val"),
-    headerAchievementsBtn: document.getElementById("header-achievements-btn"),
+    headerXpBadge: document.getElementById("header-xp-badge"),
+    headerXpVal: document.getElementById("header-xp-val"),
     soundToggleBtn: document.getElementById("sound-toggle-btn"),
-    headerHomeBtn: document.getElementById("header-home-btn"),
-    brandHomeLink: document.getElementById("brand-home-link"),
-    toast: document.getElementById("toast"),
-    toastText: document.getElementById("toast-text"),
-    toastIcon: document.getElementById("toast-icon"),
 
-    // Home Gamification Hub
-    hubLevelBadge: document.getElementById("hub-level-badge"),
-    hubLevelTitle: document.getElementById("hub-level-title"),
-    hubXpProgressText: document.getElementById("hub-xp-progress-text"),
-    hubXpFill: document.getElementById("hub-xp-fill"),
-    hubDailyStreak: document.getElementById("hub-daily-streak"),
-    hubTotalXp: document.getElementById("hub-total-xp"),
-    hubBestStreak: document.getElementById("hub-best-streak"),
-    hubAchievementsCount: document.getElementById("hub-achievements-count"),
-    hubViewAchievementsBtn: document.getElementById("hub-view-achievements-btn"),
+    // Top Metric Cards
+    metricPointsVal: document.getElementById("metric-points-val"),
+    metricStreakVal: document.getElementById("metric-streak-val"),
+    metricLessonsVal: document.getElementById("metric-lessons-val"),
+    metricTodayVal: document.getElementById("metric-today-val"),
 
-    // Home Setup
-    quizConfigForm: document.getElementById("quiz-config-form"),
-    categorySelect: document.getElementById("category-select"),
-    quickCategoryCards: document.querySelectorAll(".cat-card-option"),
+    // Subject Cards
+    subjectCards: document.querySelectorAll(".subject-card"),
+
+    // Quick Actions
+    btnQuickAchievements: document.getElementById("btn-quick-achievements"),
+    btnQuickGoal: document.getElementById("btn-quick-goal"),
+    btnQuickPractice: document.getElementById("btn-quick-practice"),
+    btnQuickLeaderboard: document.getElementById("btn-quick-leaderboard"),
+
+    // Subject Launcher Modal
+    subjectModal: document.getElementById("subject-modal"),
+    subjectModalCloseBtn: document.getElementById("subject-modal-close-btn"),
+    modalSubjectTitle: document.getElementById("modal-subject-title"),
+    modalSubjectDesc: document.getElementById("modal-subject-desc"),
+    modalSubjectIconBox: document.getElementById("modal-subject-icon-box"),
+    modalLessonPicker: document.getElementById("modal-lesson-picker"),
     difficultyBtns: document.querySelectorAll("#difficulty-control .segment-btn"),
-    timerToggle: document.getElementById("timer-toggle"),
-    timerOptionsContainer: document.getElementById("timer-options-container"),
-    wholeQuizMinutes: document.getElementById("whole-quiz-minutes"),
-    perQuestionSeconds: document.getElementById("per-question-seconds"),
-    timerModeRadios: document.querySelectorAll("input[name='timerMode']"),
+    modalTimerModeRadios: document.querySelectorAll(".timer-card-opt"),
+    modalCancelLaunchBtn: document.getElementById("modal-cancel-launch-btn"),
+    modalStartQuizBtn: document.getElementById("modal-start-quiz-btn"),
 
-    // Active Quiz
+    // Achievements Modal
+    achievementsModal: document.getElementById("achievements-modal"),
+    achievementsModalCloseBtn: document.getElementById("achievements-modal-close-btn"),
+    modalAchievementsUnlockedCount: document.getElementById("modal-achievements-unlocked-count"),
+    achievementsListModal: document.getElementById("achievements-list-modal"),
+
+    // Goal Modal
+    goalModal: document.getElementById("goal-modal"),
+    goalModalCloseBtn: document.getElementById("goal-modal-close-btn"),
+    goalOptionsContainer: document.getElementById("goal-options-container"),
+    goalProgressText: document.getElementById("goal-progress-text"),
+    goalProgressFill: document.getElementById("goal-progress-fill"),
+    goalSaveBtn: document.getElementById("goal-save-btn"),
+
+    // Leaderboard Modal
+    leaderboardModal: document.getElementById("leaderboard-modal"),
+    leaderboardModalCloseBtn: document.getElementById("leaderboard-modal-close-btn"),
+    leaderboardListItems: document.getElementById("leaderboard-list-items"),
+
+    // Confirm Quit Modal
+    confirmModal: document.getElementById("confirm-modal"),
+    modalCloseX: document.getElementById("modal-close-x"),
+    modalTitle: document.getElementById("modal-title"),
+    modalBody: document.getElementById("modal-body"),
+    modalCancelBtn: document.getElementById("modal-cancel-btn"),
+    modalConfirmBtn: document.getElementById("modal-confirm-btn"),
+
+    // Toast
+    toast: document.getElementById("toast"),
+    toastIcon: document.getElementById("toast-icon"),
+    toastText: document.getElementById("toast-text"),
+
+    // Active Quiz View Elements
+    quizSubjectIconBox: document.getElementById("quiz-subject-icon-box"),
     quizCategoryBadge: document.getElementById("quiz-category-badge"),
+    quizLessonSubtitle: document.getElementById("quiz-lesson-subtitle"),
     quizDifficultyBadge: document.getElementById("quiz-difficulty-badge"),
     quizStreakWidget: document.getElementById("quiz-streak-widget"),
     quizStreakCount: document.getElementById("quiz-streak-count"),
@@ -393,7 +559,7 @@
     nextBtn: document.getElementById("next-btn"),
     submitQuizBtn: document.getElementById("submit-quiz-btn"),
 
-    // Results Screen
+    // Results Elements
     resultsIcon: document.getElementById("results-icon"),
     resultsHeading: document.getElementById("results-heading"),
     resultsSubheading: document.getElementById("results-subheading"),
@@ -403,14 +569,11 @@
     statWrong: document.getElementById("stat-wrong"),
     statSkipped: document.getElementById("stat-skipped"),
     statTime: document.getElementById("stat-time"),
-
-    // Rewards & Gamification on Results
     resultsRewardsCard: document.getElementById("results-rewards-card"),
     resultsTotalXpGained: document.getElementById("results-total-xp-gained"),
     resultsRewardsBreakdown: document.getElementById("results-rewards-breakdown"),
     resultsNewAchievementsContainer: document.getElementById("results-new-achievements-container"),
     resultsNewAchievementsList: document.getElementById("results-new-achievements-list"),
-
     retakeQuizBtn: document.getElementById("retake-quiz-btn"),
     changeTopicBtn: document.getElementById("change-topic-btn"),
     reviewListContainer: document.getElementById("review-list-container"),
@@ -418,24 +581,11 @@
     countAll: document.getElementById("count-all"),
     countCorrect: document.getElementById("count-correct"),
     countIncorrect: document.getElementById("count-incorrect"),
-    countFlagged: document.getElementById("count-flagged"),
-
-    // Achievements Modal
-    achievementsModal: document.getElementById("achievements-modal"),
-    achievementsModalCloseBtn: document.getElementById("achievements-modal-close-btn"),
-    modalAchievementsUnlockedCount: document.getElementById("modal-achievements-unlocked-count"),
-    achievementsListModal: document.getElementById("achievements-list-modal"),
-
-    // Confirm Modal
-    confirmModal: document.getElementById("confirm-modal"),
-    modalTitle: document.getElementById("modal-title"),
-    modalBody: document.getElementById("modal-body"),
-    modalCancelBtn: document.getElementById("modal-cancel-btn"),
-    modalConfirmBtn: document.getElementById("modal-confirm-btn")
+    countFlagged: document.getElementById("count-flagged")
   };
 
   // ==========================================================================
-  // 5. Utility Functions (Fisher-Yates Shuffle & Formatting)
+  // 5. Utility Functions (Shuffle, Format, Toasts)
   // ==========================================================================
   function shuffleArray(array) {
     const copy = [...array];
@@ -472,17 +622,26 @@
 
     setTimeout(() => {
       if (badge.parentNode) badge.parentNode.removeChild(badge);
-    }, 1300);
+    }, 1200);
   }
 
   function switchView(viewName) {
     dom.homeView.classList.remove("active");
     dom.quizView.classList.remove("active");
     dom.resultsView.classList.remove("active");
+    if (dom.insightsView) dom.insightsView.classList.remove("active");
+
+    if (dom.navBtnPractice) dom.navBtnPractice.classList.remove("active");
+    if (dom.navBtnInsights) dom.navBtnInsights.classList.remove("active");
 
     if (viewName === "home") {
       dom.homeView.classList.add("active");
-      Gamification.updateUI();
+      if (dom.navBtnPractice) dom.navBtnPractice.classList.add("active");
+      Gamification.updateDashboardUI();
+    } else if (viewName === "insights") {
+      if (dom.insightsView) dom.insightsView.classList.add("active");
+      if (dom.navBtnInsights) dom.navBtnInsights.classList.add("active");
+      updateInsightsUI();
     } else if (viewName === "quiz") {
       dom.quizView.classList.add("active");
     } else if (viewName === "results") {
@@ -490,6 +649,18 @@
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function updateInsightsUI() {
+    if (dom.insightsDateDisplay) {
+      const now = new Date();
+      const options = { weekday: "short", day: "numeric", month: "short" };
+      dom.insightsDateDisplay.textContent = now.toLocaleDateString("en-US", options);
+    }
+    if (Gamification.state.totalPoints > 0 && dom.insightsMasteryHours) {
+      const hours = (24.50 + (Gamification.state.totalPoints * 0.05)).toFixed(2);
+      dom.insightsMasteryHours.textContent = hours;
+    }
   }
 
   function showConfirmModal(title, body, onConfirm) {
@@ -504,50 +675,99 @@
     state.pendingConfirmAction = null;
   }
 
-  function openAchievementsModal() {
-    Gamification.renderAchievementsModal();
-    dom.achievementsModal.classList.add("open");
+  // ==========================================================================
+  // 6. Subject Launcher Modal Setup & Customization
+  // ==========================================================================
+  function openSubjectLauncherModal(subjectName) {
+    state.subject = subjectName;
+    const config = SUBJECTS_CONFIG[subjectName];
+    if (!config) return;
+
+    dom.modalSubjectTitle.textContent = subjectName;
+    dom.modalSubjectIconBox.textContent = config.iconChar;
+    dom.modalSubjectIconBox.className = `subject-modal-badge ${config.colorClass}`;
+    dom.modalSubjectDesc.textContent = `Choose lesson module (${config.totalLessons} available)`;
+
+    // Render Lesson Module Options
+    dom.modalLessonPicker.innerHTML = "";
+    config.lessons.forEach((l, idx) => {
+      const card = document.createElement("div");
+      card.className = `lesson-opt-card ${idx === 0 ? "selected" : ""}`;
+      card.dataset.lessonId = l.id;
+      card.innerHTML = `
+        <div style="font-size: 1.1rem;">📝</div>
+        <div>
+          <div class="lesson-opt-title">${l.title}</div>
+          <div class="lesson-opt-desc">${l.desc}</div>
+        </div>
+      `;
+
+      card.addEventListener("click", () => {
+        dom.modalLessonPicker.querySelectorAll(".lesson-opt-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        state.lesson = l.id;
+      });
+
+      dom.modalLessonPicker.appendChild(card);
+    });
+
+    state.lesson = config.lessons[0].id;
+    dom.subjectModal.classList.add("open");
   }
 
-  function closeAchievementsModal() {
-    dom.achievementsModal.classList.remove("open");
+  function closeSubjectLauncherModal() {
+    dom.subjectModal.classList.remove("open");
   }
 
   // ==========================================================================
-  // 6. Quiz Initialization & Randomization
+  // 7. Quiz Initiation & Session Setup
   // ==========================================================================
   function startQuiz() {
-    // 1. Filter Questions
+    closeSubjectLauncherModal();
+
+    // 1. Filter Questions from Question Bank
     let pool = window.QUESTION_BANK || [];
 
-    if (state.category !== "ALL") {
-      pool = pool.filter(q => q.category === state.category);
+    // Filter by subject
+    pool = pool.filter(q => q.subject === state.subject || q.category === state.subject);
+
+    // Filter by lesson
+    if (state.lesson) {
+      const lessonPool = pool.filter(q => q.lesson === state.lesson);
+      if (lessonPool.length > 0) {
+        pool = lessonPool;
+      }
     }
 
+    // Filter by difficulty if specific level requested
     if (state.difficulty !== "ALL") {
-      pool = pool.filter(q => q.difficulty === state.difficulty);
+      const diffPool = pool.filter(q => q.difficulty === state.difficulty);
+      if (diffPool.length > 0) {
+        pool = diffPool;
+      }
     }
 
     if (pool.length === 0) {
-      showToast("No questions found for the selected criteria. Try choosing 'All Levels'.", "⚠️");
-      return;
+      showToast("No questions found for this configuration. Loading all available questions for this subject.", "⚠️");
+      pool = (window.QUESTION_BANK || []).filter(q => q.subject === state.subject);
     }
 
     // 2. Randomize Question Order
     const shuffledQuestionPool = shuffleArray(pool);
 
-    // 3. For every question, randomize its answer options (A, B, C, D)
-    state.sessionQuestions = shuffledQuestionPool.map((q) => {
+    // 3. For each question, randomize options A to D
+    state.sessionQuestions = shuffledQuestionPool.map(q => {
       const shuffledOptions = shuffleArray(q.options);
       return {
         originalId: q.id,
-        category: q.category,
+        subject: q.subject || state.subject,
+        category: q.category || state.subject,
+        lesson: q.lesson || state.lesson,
         difficulty: q.difficulty,
         question: q.question,
         shuffledOptions: shuffledOptions,
         correctAnswer: q.correctAnswer,
         explanation: q.explanation,
-        // Session tracking fields
         selectedAnswer: null,
         isAnswered: false,
         isCorrect: false,
@@ -559,341 +779,53 @@
     state.quizStartTime = Date.now();
     state.totalElapsedSeconds = 0;
 
-    // Reset Gamification In-Quiz Session
+    // Reset In-Quiz Gamification
     Gamification.currentInQuizStreak = 0;
-    Gamification.sessionTotalXPGained = 0;
-    Gamification.sessionXPBreakdown = [];
+    Gamification.sessionPointsGained = 0;
+    Gamification.sessionPointsBreakdown = [];
     Gamification.newlyUnlockedThisQuiz = [];
     dom.quizStreakWidget.style.display = "none";
     dom.quizStreakCount.textContent = "0";
 
     // 4. Update Quiz Header Meta
-    dom.quizCategoryBadge.textContent = state.category === "ALL" ? "All Subjects" : state.category;
-    dom.quizDifficultyBadge.textContent = state.difficulty;
+    const config = SUBJECTS_CONFIG[state.subject] || { iconChar: "📚", colorClass: "bg-blue" };
+    dom.quizSubjectIconBox.textContent = config.iconChar;
+    dom.quizSubjectIconBox.className = `quiz-subject-mini-icon ${config.colorClass}`;
+    dom.quizCategoryBadge.textContent = state.subject;
+    dom.quizLessonSubtitle.textContent = `Lesson ${state.lesson}: Practice Mode`;
+    dom.quizDifficultyBadge.textContent = state.difficulty === "ALL" ? "All Levels" : state.difficulty;
     dom.quizDifficultyBadge.className = `difficulty-tag ${state.difficulty.toLowerCase()}`;
 
     // 5. Setup Timers
     clearAllTimers();
 
-    if (state.timerEnabled) {
+    if (state.timerMode === "none") {
+      dom.timerWidget.style.display = "none";
+    } else {
       dom.timerWidget.style.display = "inline-flex";
       dom.timerWidget.classList.remove("warning");
 
-      if (state.timerMode === "quiz") {
-        dom.timerTypeLabel.textContent = "(Whole Quiz)";
-        state.globalSecondsRemaining = state.wholeQuizSecondsTotal;
+      if (state.timerMode === "5min") {
+        dom.timerTypeLabel.textContent = "(5m Quiz)";
+        state.globalSecondsRemaining = 300;
         dom.timerDisplay.textContent = formatTime(state.globalSecondsRemaining);
         startGlobalQuizTimer();
       } else {
-        dom.timerTypeLabel.textContent = "(Per Question)";
-        state.questionSecondsRemaining = state.perQuestionSecondsTotal;
+        dom.timerTypeLabel.textContent = "(30s / Q)";
+        state.questionSecondsRemaining = 30;
         dom.timerDisplay.textContent = formatTime(state.questionSecondsRemaining);
         startPerQuestionTimer();
       }
-    } else {
-      dom.timerWidget.style.display = "none";
     }
 
-    // 6. Build Navigator Grid & Render First Question
+    // 6. Build Navigation Grid and Render Question
     buildNavigatorGrid();
     renderCurrentQuestion();
     switchView("quiz");
   }
 
   // ==========================================================================
-  // 7. Question Navigator
-  // ==========================================================================
-  function buildNavigatorGrid() {
-    dom.questionNavGrid.innerHTML = "";
-
-    state.sessionQuestions.forEach((q, idx) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "nav-btn";
-      btn.textContent = idx + 1;
-      btn.dataset.index = idx;
-      btn.setAttribute("aria-label", `Jump to Question ${idx + 1}`);
-
-      btn.addEventListener("click", () => {
-        navigateToQuestion(idx);
-      });
-
-      dom.questionNavGrid.appendChild(btn);
-    });
-
-    updateNavigatorStates();
-  }
-
-  function updateNavigatorStates() {
-    const navButtons = dom.questionNavGrid.querySelectorAll(".nav-btn");
-    let answeredCount = 0;
-
-    navButtons.forEach((btn, idx) => {
-      const q = state.sessionQuestions[idx];
-
-      btn.classList.remove("current", "answered", "flagged");
-
-      if (idx === state.currentIndex) {
-        btn.classList.add("current");
-      }
-
-      if (q.isAnswered) {
-        btn.classList.add("answered");
-        answeredCount++;
-      }
-
-      if (q.isFlagged) {
-        btn.classList.add("flagged");
-      }
-    });
-
-    const total = state.sessionQuestions.length;
-    dom.questionIndicator.textContent = `Question ${state.currentIndex + 1} of ${total}`;
-    dom.answeredStatsBadge.textContent = `${answeredCount} of ${total} Answered`;
-
-    const progressPercent = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
-    dom.progressBarFill.style.width = `${progressPercent}%`;
-  }
-
-  // ==========================================================================
-  // 8. Render Current Question & Options
-  // ==========================================================================
-  function renderCurrentQuestion() {
-    const q = state.sessionQuestions[state.currentIndex];
-    const total = state.sessionQuestions.length;
-
-    // Record question start time for speed achievement tracking
-    Gamification.questionStartTime = Date.now();
-
-    dom.questionNumTag.textContent = `Question ${state.currentIndex + 1} of ${total} • ${q.difficulty}`;
-    dom.questionText.textContent = q.question;
-
-    // Update Flag Button
-    if (q.isFlagged) {
-      dom.flagBtn.classList.add("flagged");
-      dom.flagIcon.textContent = "⚑";
-      dom.flagText.textContent = "Flagged";
-    } else {
-      dom.flagBtn.classList.remove("flagged");
-      dom.flagIcon.textContent = "⚐";
-      dom.flagText.textContent = "Flag for Review";
-    }
-
-    // Build Options (A to D)
-    dom.optionsContainer.innerHTML = "";
-    const letters = ["A", "B", "C", "D"];
-
-    q.shuffledOptions.forEach((optionText, optIdx) => {
-      const optBtn = document.createElement("button");
-      optBtn.type = "button";
-      optBtn.className = "option-btn";
-      optBtn.dataset.optionIndex = optIdx;
-
-      const letterBadge = document.createElement("span");
-      letterBadge.className = "option-letter";
-      letterBadge.textContent = letters[optIdx] || optIdx + 1;
-
-      const textSpan = document.createElement("span");
-      textSpan.className = "option-text";
-      textSpan.textContent = optionText;
-
-      const statusIcon = document.createElement("span");
-      statusIcon.className = "option-status-icon";
-
-      optBtn.appendChild(letterBadge);
-      optBtn.appendChild(textSpan);
-      optBtn.appendChild(statusIcon);
-
-      if (q.isAnswered) {
-        optBtn.disabled = true;
-
-        if (optionText === q.correctAnswer) {
-          optBtn.classList.add("correct");
-          statusIcon.textContent = "✓";
-        } else if (optionText === q.selectedAnswer) {
-          optBtn.classList.add("wrong");
-          statusIcon.textContent = "✕";
-        }
-      } else {
-        optBtn.addEventListener("click", () => {
-          handleSelectAnswer(optionText, optBtn);
-        });
-      }
-
-      dom.optionsContainer.appendChild(optBtn);
-    });
-
-    // Render Explanation Card if question is answered
-    if (q.isAnswered) {
-      dom.explanationCard.style.display = "block";
-      dom.explanationText.textContent = q.explanation;
-      if (!q.isCorrect) {
-        dom.explanationCard.classList.add("is-wrong");
-      } else {
-        dom.explanationCard.classList.remove("is-wrong");
-      }
-    } else {
-      dom.explanationCard.style.display = "none";
-      dom.explanationCard.classList.remove("is-wrong");
-    }
-
-    // Navigation Buttons State
-    dom.prevBtn.disabled = state.currentIndex === 0;
-
-    if (state.currentIndex === total - 1) {
-      dom.nextBtn.style.display = "none";
-      dom.skipBtn.style.display = "none";
-    } else {
-      dom.nextBtn.style.display = "inline-flex";
-      dom.skipBtn.style.display = "inline-flex";
-    }
-
-    updateNavigatorStates();
-
-    // Reset Per-Question Timer if active
-    if (state.timerEnabled && state.timerMode === "question" && !q.isAnswered) {
-      restartPerQuestionTimer();
-    }
-  }
-
-  // ==========================================================================
-  // 9. Answer Selection & Feedback Highlighting (with Gamification XP & Streaks)
-  // ==========================================================================
-  function handleSelectAnswer(selectedText, clickedButton) {
-    const q = state.sessionQuestions[state.currentIndex];
-    if (q.isAnswered) return; // Prevent double submit
-
-    const responseTimeSec = (Date.now() - Gamification.questionStartTime) / 1000;
-    const isCorrect = selectedText === q.correctAnswer;
-    q.selectedAnswer = selectedText;
-    q.isAnswered = true;
-    q.isCorrect = isCorrect;
-
-    // Handle Streaks & XP
-    if (isCorrect) {
-      SoundEngine.correct();
-
-      // In-Quiz Streak increment
-      Gamification.currentInQuizStreak += 1;
-      if (Gamification.currentInQuizStreak > Gamification.state.bestInQuizStreak) {
-        Gamification.state.bestInQuizStreak = Gamification.currentInQuizStreak;
-      }
-
-      // Check In-Quiz Streak Achievements
-      if (Gamification.currentInQuizStreak >= 3) {
-        Gamification.unlockAchievement("streak_3");
-      }
-      if (Gamification.currentInQuizStreak >= 5) {
-        Gamification.unlockAchievement("streak_5");
-      }
-
-      // Check Speed Demon Achievement (< 5s)
-      if (responseTimeSec <= 5.0) {
-        Gamification.unlockAchievement("speed_demon");
-      }
-
-      // Calculate XP
-      const baseXP = q.difficulty === "Hard" ? 25 : (q.difficulty === "Medium" ? 20 : 15);
-      const streakBonus = Gamification.currentInQuizStreak >= 2 ? (Gamification.currentInQuizStreak * 5) : 0;
-      const speedBonus = responseTimeSec <= 5.0 ? 10 : 0;
-      const totalEarned = baseXP + streakBonus + speedBonus;
-
-      Gamification.addXP(totalEarned, `Question ${state.currentIndex + 1} (${q.difficulty}${streakBonus ? " + Streak" : ""})`);
-
-      // Visual feedback: Floating XP and Live Streak Widget
-      showFloatingXP(`+${totalEarned} XP!`);
-
-      if (Gamification.currentInQuizStreak >= 2) {
-        dom.quizStreakWidget.style.display = "inline-flex";
-        dom.quizStreakCount.textContent = Gamification.currentInQuizStreak;
-      }
-    } else {
-      SoundEngine.wrong();
-      // Reset in-quiz streak
-      Gamification.currentInQuizStreak = 0;
-      dom.quizStreakWidget.style.display = "none";
-    }
-
-    // Disable all options and show colors
-    const optionButtons = dom.optionsContainer.querySelectorAll(".option-btn");
-    optionButtons.forEach(btn => {
-      btn.disabled = true;
-      const text = btn.querySelector(".option-text").textContent;
-      const icon = btn.querySelector(".option-status-icon");
-
-      if (text === q.correctAnswer) {
-        btn.classList.add("correct");
-        icon.textContent = "✓";
-      } else if (text === selectedText && !isCorrect) {
-        btn.classList.add("wrong");
-        icon.textContent = "✕";
-      }
-    });
-
-    // Show Explanation
-    dom.explanationCard.style.display = "block";
-    dom.explanationText.textContent = q.explanation;
-    if (!isCorrect) {
-      dom.explanationCard.classList.add("is-wrong");
-    } else {
-      dom.explanationCard.classList.remove("is-wrong");
-    }
-
-    // Pause question timer on answer
-    if (state.questionTimerInterval) {
-      clearInterval(state.questionTimerInterval);
-    }
-
-    updateNavigatorStates();
-  }
-
-  // ==========================================================================
-  // 10. Navigation Actions (Next, Prev, Skip, Jump, Flag)
-  // ==========================================================================
-  function navigateToQuestion(newIndex) {
-    if (newIndex >= 0 && newIndex < state.sessionQuestions.length) {
-      state.currentIndex = newIndex;
-      renderCurrentQuestion();
-    }
-  }
-
-  function handleNext() {
-    if (state.currentIndex < state.sessionQuestions.length - 1) {
-      navigateToQuestion(state.currentIndex + 1);
-    }
-  }
-
-  function handlePrev() {
-    if (state.currentIndex > 0) {
-      navigateToQuestion(state.currentIndex - 1);
-    }
-  }
-
-  function handleSkip() {
-    showToast("Skipped question. Use the navigator to return anytime.", "⏭️");
-    handleNext();
-  }
-
-  function toggleFlagCurrentQuestion() {
-    const q = state.sessionQuestions[state.currentIndex];
-    q.isFlagged = !q.isFlagged;
-
-    if (q.isFlagged) {
-      dom.flagBtn.classList.add("flagged");
-      dom.flagIcon.textContent = "⚑";
-      dom.flagText.textContent = "Flagged";
-      showToast(`Question ${state.currentIndex + 1} flagged for review.`, "⚑");
-    } else {
-      dom.flagBtn.classList.remove("flagged");
-      dom.flagIcon.textContent = "⚐";
-      dom.flagText.textContent = "Flag for Review";
-    }
-
-    updateNavigatorStates();
-  }
-
-  // ==========================================================================
-  // 11. Timer Logic (Whole Quiz Countdown & Per-Question Countdown)
+  // 8. Timers Logic
   // ==========================================================================
   function clearAllTimers() {
     if (state.globalTimerInterval) {
@@ -907,497 +839,642 @@
   }
 
   function startGlobalQuizTimer() {
-    if (state.globalTimerInterval) clearInterval(state.globalTimerInterval);
-
     state.globalTimerInterval = setInterval(() => {
-      state.globalSecondsRemaining--;
-
-      if (state.globalSecondsRemaining <= 60) {
-        dom.timerWidget.classList.add("warning");
-        if (state.globalSecondsRemaining <= 10) {
-          SoundEngine.tick();
-        }
-      }
-
+      state.globalSecondsRemaining -= 1;
       dom.timerDisplay.textContent = formatTime(state.globalSecondsRemaining);
+
+      if (state.globalSecondsRemaining <= 30) {
+        dom.timerWidget.classList.add("warning");
+      }
 
       if (state.globalSecondsRemaining <= 0) {
         clearAllTimers();
-        showToast("Time is up! Submitting quiz automatically.", "⏰");
-        submitQuiz(true);
+        showToast("⏰ Time is up! Submitting your practice quiz...", "⏱️");
+        finishAndSubmitQuiz();
       }
     }, 1000);
   }
 
   function startPerQuestionTimer() {
-    if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
-
-    state.questionSecondsRemaining = state.perQuestionSecondsTotal;
+    state.questionSecondsRemaining = 30;
     dom.timerDisplay.textContent = formatTime(state.questionSecondsRemaining);
     dom.timerWidget.classList.remove("warning");
 
+    if (state.questionTimerInterval) clearInterval(state.questionTimerInterval);
+
     state.questionTimerInterval = setInterval(() => {
-      state.questionSecondsRemaining--;
+      state.questionSecondsRemaining -= 1;
+      dom.timerDisplay.textContent = formatTime(state.questionSecondsRemaining);
 
       if (state.questionSecondsRemaining <= 5) {
         dom.timerWidget.classList.add("warning");
-        SoundEngine.tick();
       }
-
-      dom.timerDisplay.textContent = formatTime(state.questionSecondsRemaining);
 
       if (state.questionSecondsRemaining <= 0) {
         clearInterval(state.questionTimerInterval);
-        handlePerQuestionTimeout();
+        showToast("Question time expired! Moving to the next question.", "⏱️");
+        goToNextQuestion();
       }
     }, 1000);
   }
 
-  function restartPerQuestionTimer() {
-    startPerQuestionTimer();
-  }
-
-  function handlePerQuestionTimeout() {
-    const q = state.sessionQuestions[state.currentIndex];
-    if (!q.isAnswered) {
-      showToast(`Time ran out for Question ${state.currentIndex + 1}!`, "⌛");
-      if (state.currentIndex < state.sessionQuestions.length - 1) {
-        handleNext();
-      } else {
-        submitQuiz(true);
-      }
-    }
-  }
-
   // ==========================================================================
-  // 12. Quiz Submission, Results & Rewards Breakdown
+  // 9. Question Rendering & Navigator
   // ==========================================================================
-  function confirmSubmitQuiz() {
-    const total = state.sessionQuestions.length;
-    const answeredCount = state.sessionQuestions.filter(q => q.isAnswered).length;
-    const unansweredCount = total - answeredCount;
-    const flaggedCount = state.sessionQuestions.filter(q => q.isFlagged).length;
-
-    let warningText = "Are you ready to submit your quiz?";
-    if (unansweredCount > 0 || flaggedCount > 0) {
-      const parts = [];
-      if (unansweredCount > 0) parts.push(`${unansweredCount} unanswered`);
-      if (flaggedCount > 0) parts.push(`${flaggedCount} flagged for review`);
-      warningText = `You currently have ${parts.join(" and ")}. Do you still want to finish and view your final results?`;
-    }
-
-    showConfirmModal("Submit Quiz?", warningText, () => {
-      submitQuiz(false);
+  function buildNavigatorGrid() {
+    dom.questionNavGrid.innerHTML = "";
+    state.sessionQuestions.forEach((q, index) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nav-num-btn";
+      btn.textContent = index + 1;
+      btn.title = `Go to Question ${index + 1}`;
+      btn.addEventListener("click", () => {
+        saveCurrentQuestionTimerState();
+        state.currentIndex = index;
+        renderCurrentQuestion();
+      });
+      dom.questionNavGrid.appendChild(btn);
     });
+    updateNavigatorUI();
   }
 
-  function submitQuiz(forcedByTimer = false) {
+  function updateNavigatorUI() {
+    const buttons = dom.questionNavGrid.querySelectorAll(".nav-num-btn");
+    let answeredCount = 0;
+
+    buttons.forEach((btn, index) => {
+      const q = state.sessionQuestions[index];
+      btn.classList.remove("current", "answered", "flagged");
+
+      if (index === state.currentIndex) {
+        btn.classList.add("current");
+      }
+      if (q.isAnswered) {
+        btn.classList.add("answered");
+        answeredCount += 1;
+      }
+      if (q.isFlagged) {
+        btn.classList.add("flagged");
+      }
+    });
+
+    const total = state.sessionQuestions.length;
+    dom.questionIndicator.textContent = `Question ${state.currentIndex + 1} of ${total}`;
+    dom.answeredStatsBadge.textContent = `${answeredCount} of ${total} Answered`;
+
+    const progressPct = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
+    dom.progressBarFill.style.width = `${progressPct}%`;
+  }
+
+  function renderCurrentQuestion() {
+    const total = state.sessionQuestions.length;
+    if (state.currentIndex < 0 || state.currentIndex >= total) return;
+
+    const currentQ = state.sessionQuestions[state.currentIndex];
+    Gamification.questionStartTime = Date.now();
+
+    dom.questionNumTag.textContent = `Question ${state.currentIndex + 1} of ${total} • ${currentQ.difficulty}`;
+    dom.questionText.textContent = currentQ.question;
+
+    // Flag button state
+    if (currentQ.isFlagged) {
+      dom.flagBtn.classList.add("flagged");
+      dom.flagIcon.textContent = "⚑";
+      dom.flagText.textContent = "Flagged";
+    } else {
+      dom.flagBtn.classList.remove("flagged");
+      dom.flagIcon.textContent = "⚐";
+      dom.flagText.textContent = "Flag for Review";
+    }
+
+    // Render Options A, B, C, D
+    dom.optionsContainer.innerHTML = "";
+    const letters = ["A", "B", "C", "D"];
+
+    currentQ.shuffledOptions.forEach((optText, optIndex) => {
+      const optBtn = document.createElement("button");
+      optBtn.type = "button";
+      optBtn.className = "option-btn";
+      optBtn.setAttribute("data-option", optText);
+
+      const letterBadge = document.createElement("span");
+      letterBadge.className = "option-letter";
+      letterBadge.textContent = letters[optIndex] || String.fromCharCode(65 + optIndex);
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = optText;
+
+      optBtn.appendChild(letterBadge);
+      optBtn.appendChild(textSpan);
+
+      // If already answered, reveal state
+      if (currentQ.isAnswered) {
+        optBtn.disabled = true;
+        if (optText === currentQ.correctAnswer) {
+          optBtn.classList.add("selected-correct");
+        } else if (optText === currentQ.selectedAnswer) {
+          optBtn.classList.add("selected-wrong");
+        }
+      } else {
+        optBtn.addEventListener("click", () => handleOptionSelection(optText, optBtn));
+      }
+
+      dom.optionsContainer.appendChild(optBtn);
+    });
+
+    // Explanation card
+    if (currentQ.isAnswered) {
+      dom.explanationText.textContent = currentQ.explanation;
+      dom.explanationCard.classList.add("show");
+    } else {
+      dom.explanationCard.classList.remove("show");
+    }
+
+    // Update Next/Previous buttons
+    dom.prevBtn.disabled = state.currentIndex === 0;
+    dom.nextBtn.style.display = state.currentIndex === total - 1 ? "none" : "inline-flex";
+
+    updateNavigatorUI();
+
+    if (state.timerMode === "perQuestion" && !currentQ.isAnswered) {
+      startPerQuestionTimer();
+    }
+  }
+
+  function handleOptionSelection(selectedAnswer, chosenBtn) {
+    const currentQ = state.sessionQuestions[state.currentIndex];
+    if (currentQ.isAnswered) return;
+
+    currentQ.selectedAnswer = selectedAnswer;
+    currentQ.isAnswered = true;
+    currentQ.isCorrect = selectedAnswer === currentQ.correctAnswer;
+
+    const answerTimeSeconds = (Date.now() - Gamification.questionStartTime) / 1000;
+
+    // Disable all options
+    const allBtns = dom.optionsContainer.querySelectorAll(".option-btn");
+    allBtns.forEach(btn => {
+      btn.disabled = true;
+      const val = btn.getAttribute("data-option");
+      if (val === currentQ.correctAnswer) {
+        btn.classList.add("selected-correct");
+      }
+    });
+
+    if (currentQ.isCorrect) {
+      chosenBtn.classList.add("selected-correct");
+      SoundEngine.correct();
+
+      // Points and Streak
+      Gamification.currentInQuizStreak += 1;
+      let pointsAwarded = 10;
+      Gamification.addPoints(pointsAwarded, `Question ${state.currentIndex + 1} Correct`);
+      showFloatingXP(`+${pointsAwarded} XP`);
+
+      // In-quiz streak bonuses
+      if (Gamification.currentInQuizStreak >= 3) {
+        dom.quizStreakWidget.style.display = "inline-flex";
+        dom.quizStreakCount.textContent = Gamification.currentInQuizStreak;
+        Gamification.unlockAchievement("streak_3");
+      }
+      if (Gamification.currentInQuizStreak >= 5) {
+        Gamification.unlockAchievement("streak_5");
+      }
+      if (answerTimeSeconds < 5) {
+        Gamification.unlockAchievement("speed_demon");
+      }
+    } else {
+      chosenBtn.classList.add("selected-wrong");
+      SoundEngine.wrong();
+      Gamification.currentInQuizStreak = 0;
+      dom.quizStreakWidget.style.display = "none";
+    }
+
+    // Show Explanation
+    dom.explanationText.textContent = currentQ.explanation;
+    dom.explanationCard.classList.add("show");
+
+    updateNavigatorUI();
+  }
+
+  function saveCurrentQuestionTimerState() {
+    if (state.timerMode === "perQuestion" && state.questionTimerInterval) {
+      clearInterval(state.questionTimerInterval);
+    }
+  }
+
+  function goToNextQuestion() {
+    saveCurrentQuestionTimerState();
+    if (state.currentIndex < state.sessionQuestions.length - 1) {
+      state.currentIndex += 1;
+      renderCurrentQuestion();
+    } else {
+      finishAndSubmitQuiz();
+    }
+  }
+
+  function goToPreviousQuestion() {
+    saveCurrentQuestionTimerState();
+    if (state.currentIndex > 0) {
+      state.currentIndex -= 1;
+      renderCurrentQuestion();
+    }
+  }
+
+  function toggleFlagCurrentQuestion() {
+    const currentQ = state.sessionQuestions[state.currentIndex];
+    currentQ.isFlagged = !currentQ.isFlagged;
+
+    if (currentQ.isFlagged) {
+      dom.flagBtn.classList.add("flagged");
+      dom.flagIcon.textContent = "⚑";
+      dom.flagText.textContent = "Flagged";
+      showToast("Question flagged for review.", "⚑");
+    } else {
+      dom.flagBtn.classList.remove("flagged");
+      dom.flagIcon.textContent = "⚐";
+      dom.flagText.textContent = "Flag for Review";
+    }
+    updateNavigatorUI();
+  }
+
+  // ==========================================================================
+  // 10. Finish & Review Screen
+  // ==========================================================================
+  function finishAndSubmitQuiz() {
     clearAllTimers();
-    closeConfirmModal();
+    SoundEngine.finish();
 
-    const elapsedSeconds = Math.round((Date.now() - state.quizStartTime) / 1000);
-    state.totalElapsedSeconds = elapsedSeconds;
-
-    // Calculate score metrics
     const total = state.sessionQuestions.length;
     let correctCount = 0;
     let wrongCount = 0;
     let skippedCount = 0;
-    let anyFlagged = false;
+    let flaggedCount = 0;
 
     state.sessionQuestions.forEach(q => {
-      if (q.isFlagged) anyFlagged = true;
-
-      if (!q.isAnswered) {
-        skippedCount++;
-      } else if (q.isCorrect) {
-        correctCount++;
-      } else {
-        wrongCount++;
-      }
+      if (!q.isAnswered) skippedCount += 1;
+      else if (q.isCorrect) correctCount += 1;
+      else wrongCount += 1;
+      if (q.isFlagged) flaggedCount += 1;
     });
 
-    const scorePct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    state.totalElapsedSeconds = Math.round((Date.now() - state.quizStartTime) / 1000);
 
-    // Award Quiz Completion XP Bonuses
-    const completionBaseXP = 50;
-    Gamification.addXP(completionBaseXP, "Quiz Completion Bonus");
-
-    if (scorePct >= 80) {
-      Gamification.addXP(30, "High Score Bonus (≥80%)");
-    }
-    if (scorePct === 100) {
-      Gamification.addXP(100, "Perfect Score Bonus (100%)");
-      Gamification.unlockAchievement("perfect_score");
-    }
-
-    // Check Post-Quiz Achievements
-    Gamification.state.quizzesCompleted += 1;
+    // Gamification Updates
+    Gamification.recordLessonCompletion(state.subject, state.lesson);
     Gamification.unlockAchievement("first_quiz");
 
-    if (anyFlagged) {
+    if (percentage === 100) {
+      Gamification.unlockAchievement("perfect_score");
+    }
+    if (flaggedCount > 0) {
       Gamification.unlockAchievement("tactician");
     }
 
-    // Polymath Check: Distinct subjects completed
-    const currentSubject = state.category === "ALL" ? "Comprehensive" : state.category;
-    if (!Gamification.state.subjectsPracticed.includes(currentSubject)) {
-      Gamification.state.subjectsPracticed.push(currentSubject);
-    }
-    if (Gamification.state.subjectsPracticed.length >= 3) {
+    // Check Polymath (lessons in 3 distinct subjects)
+    let distinctSubjectCount = 0;
+    Object.keys(Gamification.state.completedLessons).forEach(subj => {
+      if (Gamification.state.completedLessons[subj].length > 0) {
+        distinctSubjectCount += 1;
+      }
+    });
+    if (distinctSubjectCount >= 3) {
       Gamification.unlockAchievement("polymath");
     }
 
-    // Check Level Up achievement
-    if (Gamification.getLevelInfo().level >= 2) {
-      Gamification.unlockAchievement("level_up");
+    // Completion bonus points
+    const completionBonus = correctCount * 5;
+    if (completionBonus > 0) {
+      Gamification.addPoints(completionBonus, "Lesson Completion Bonus");
     }
 
-    Gamification.save();
-
-    // Populate Results Screen Metrics
-    dom.scorePercentage.textContent = `${scorePct}%`;
+    // Update Results Display
     dom.statTotal.textContent = total;
     dom.statCorrect.textContent = correctCount;
     dom.statWrong.textContent = wrongCount;
     dom.statSkipped.textContent = skippedCount;
-    dom.statTime.textContent = `${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`;
+    dom.statTime.textContent = formatTime(state.totalElapsedSeconds);
+    dom.scorePercentage.textContent = `${percentage}%`;
 
-    // Dynamic Verdict Banner
-    if (scorePct >= 90) {
-      dom.resultsIcon.textContent = "🏆";
-      dom.resultsHeading.textContent = "Mastery Achieved!";
-      dom.resultsSubheading.textContent = "Exceptional performance! You have a commanding grasp of this topic.";
-    } else if (scorePct >= 70) {
+    if (percentage >= 80) {
       dom.resultsIcon.textContent = "🎉";
-      dom.resultsHeading.textContent = "Great Job!";
-      dom.resultsSubheading.textContent = "Strong effort! Review the questions you missed to lock in full marks on exam day.";
-    } else if (scorePct >= 50) {
-      dom.resultsIcon.textContent = "📈";
-      dom.resultsHeading.textContent = "Solid Practice Run";
-      dom.resultsSubheading.textContent = "You're making good progress. Spend extra time reviewing the detailed explanations below.";
+      dom.resultsHeading.textContent = "Outstanding Performance!";
+      dom.resultsSubheading.textContent = `You mastered ${state.subject} (Lesson ${state.lesson}) with flying colors!`;
+    } else if (percentage >= 50) {
+      dom.resultsIcon.textContent = "👍";
+      dom.resultsHeading.textContent = "Good Effort!";
+      dom.resultsSubheading.textContent = "Solid attempt! Review the explanations below to master the remaining questions.";
     } else {
-      dom.resultsIcon.textContent = "📚";
+      dom.resultsIcon.textContent = "💡";
       dom.resultsHeading.textContent = "Keep Practicing!";
-      dom.resultsSubheading.textContent = "Review each explanation carefully and retake the quiz to boost your confidence.";
+      dom.resultsSubheading.textContent = "Every mistake is a learning opportunity. Review the correct explanations and try again!";
     }
 
-    // Populate Gamification Rewards Card on Results Screen
-    if (dom.resultsTotalXpGained) {
-      dom.resultsTotalXpGained.textContent = `+${Gamification.sessionTotalXPGained} XP`;
+    // Rewards Breakdown
+    dom.resultsTotalXpGained.textContent = Gamification.sessionPointsGained;
+    dom.resultsRewardsBreakdown.innerHTML = "";
+    Gamification.sessionPointsBreakdown.forEach(item => {
+      const chip = document.createElement("span");
+      chip.className = "reward-chip";
+      chip.textContent = `${item.label} (+${item.amount} XP)`;
+      dom.resultsRewardsBreakdown.appendChild(chip);
+    });
+
+    // New Achievements Unlocked
+    if (Gamification.newlyUnlockedThisQuiz.length > 0) {
+      dom.resultsNewAchievementsContainer.style.display = "block";
+      dom.resultsNewAchievementsList.innerHTML = "";
+      Gamification.newlyUnlockedThisQuiz.forEach(ach => {
+        const item = document.createElement("div");
+        item.style.fontSize = "0.88rem";
+        item.style.fontWeight = "600";
+        item.innerHTML = `${ach.icon} <strong>${ach.title}</strong> (+${ach.reward} XP)`;
+        dom.resultsNewAchievementsList.appendChild(item);
+      });
+    } else {
+      dom.resultsNewAchievementsContainer.style.display = "none";
     }
 
-    if (dom.resultsRewardsBreakdown) {
-      dom.resultsRewardsBreakdown.innerHTML = `
-        <div class="reward-pill-item">Correct Answers: <strong>+${correctCount * 20} XP</strong></div>
-        <div class="reward-pill-item">Quiz Completion: <strong>+50 XP</strong></div>
-        ${scorePct >= 80 ? '<div class="reward-pill-item">Mastery Bonus: <strong>+30 XP</strong></div>' : ''}
-        ${scorePct === 100 ? '<div class="reward-pill-item">Flawless 100%: <strong>+100 XP</strong></div>' : ''}
-        <div class="reward-pill-item">Daily Streak: <strong>${Gamification.state.dailyStreak} Days</strong></div>
-      `;
-    }
+    // Render Review List
+    dom.countAll.textContent = total;
+    dom.countCorrect.textContent = correctCount;
+    dom.countIncorrect.textContent = wrongCount + skippedCount;
+    dom.countFlagged.textContent = flaggedCount;
 
-    // Show any newly unlocked achievements this attempt
-    if (dom.resultsNewAchievementsContainer && dom.resultsNewAchievementsList) {
-      if (Gamification.newlyUnlockedThisQuiz.length > 0) {
-        dom.resultsNewAchievementsContainer.style.display = "block";
-        dom.resultsNewAchievementsList.innerHTML = "";
-        Gamification.newlyUnlockedThisQuiz.forEach(ach => {
-          const item = document.createElement("div");
-          item.className = "achievement-card unlocked";
-          item.style.padding = "10px 14px";
-          item.innerHTML = `
-            <div class="achieve-icon-box" style="width: 36px; height: 36px; min-width: 36px; font-size: 18px;">${ach.icon}</div>
-            <div class="achieve-info">
-              <div class="achieve-title" style="font-size: 0.88rem;">${ach.title}</div>
-              <div class="achieve-desc" style="font-size: 0.75rem;">${ach.desc}</div>
-            </div>
-            <div class="achieve-reward-badge">+${ach.reward} XP</div>
-          `;
-          dom.resultsNewAchievementsList.appendChild(item);
-        });
-      } else {
-        dom.resultsNewAchievementsContainer.style.display = "none";
-      }
-    }
-
-    SoundEngine.finish();
-
-    // Render Detailed Answer Review
     renderReviewList("all");
-
     switchView("results");
   }
 
-  // ==========================================================================
-  // 13. Detailed Review Section (with Filters)
-  // ==========================================================================
-  let currentReviewFilter = "all";
-
   function renderReviewList(filter = "all") {
-    currentReviewFilter = filter;
     dom.reviewListContainer.innerHTML = "";
 
-    const countAll = state.sessionQuestions.length;
-    const countCorrect = state.sessionQuestions.filter(q => q.isCorrect).length;
-    const countIncorrect = state.sessionQuestions.filter(q => q.isAnswered && !q.isCorrect).length;
-    const countFlagged = state.sessionQuestions.filter(q => q.isFlagged).length;
+    state.sessionQuestions.forEach((q, index) => {
+      if (filter === "correct" && !q.isCorrect) return;
+      if (filter === "incorrect" && q.isCorrect) return;
+      if (filter === "flagged" && !q.isFlagged) return;
 
-    dom.countAll.textContent = countAll;
-    dom.countCorrect.textContent = countCorrect;
-    dom.countIncorrect.textContent = countIncorrect;
-    dom.countFlagged.textContent = countFlagged;
+      const card = document.createElement("div");
+      card.className = "review-item";
 
-    dom.reviewFilterChips.forEach(chip => {
-      chip.classList.toggle("active", chip.dataset.filter === filter);
-    });
+      const statusBadge = q.isCorrect 
+        ? '<span style="color: #16a34a; font-weight: 700;">✓ Correct</span>' 
+        : (q.isAnswered ? '<span style="color: #ef4444; font-weight: 700;">✕ Incorrect</span>' : '<span style="color: #f59e0b; font-weight: 700;">⊘ Skipped</span>');
 
-    const filteredQuestions = state.sessionQuestions.filter((q) => {
-      if (filter === "correct") return q.isCorrect;
-      if (filter === "incorrect") return q.isAnswered && !q.isCorrect;
-      if (filter === "flagged") return q.isFlagged;
-      return true;
-    });
+      const flaggedBadge = q.isFlagged ? '<span style="color: #f59e0b; margin-left: 8px;">⚑ Flagged</span>' : '';
 
-    if (filteredQuestions.length === 0) {
-      const emptyMsg = document.createElement("p");
-      emptyMsg.style.textAlign = "center";
-      emptyMsg.style.color = "var(--text-muted)";
-      emptyMsg.style.padding = "24px";
-      emptyMsg.textContent = "No questions match this filter.";
-      dom.reviewListContainer.appendChild(emptyMsg);
-      return;
-    }
-
-    filteredQuestions.forEach((q) => {
-      const originalIdx = state.sessionQuestions.indexOf(q);
-      const itemCard = document.createElement("div");
-      itemCard.className = "review-item";
-
-      let badgeClass = "skipped";
-      let badgeText = "Skipped / Unanswered";
-      if (q.isAnswered) {
-        if (q.isCorrect) {
-          badgeClass = "correct";
-          badgeText = "Correct";
-        } else {
-          badgeClass = "incorrect";
-          badgeText = "Incorrect";
+      let optionsHTML = "";
+      q.shuffledOptions.forEach(opt => {
+        let optClass = "review-opt";
+        if (opt === q.correctAnswer) {
+          optClass += " correct";
+        } else if (opt === q.selectedAnswer && !q.isCorrect) {
+          optClass += " user-wrong";
         }
-      }
+        optionsHTML += `<div class="${optClass}">${opt} ${opt === q.selectedAnswer ? '<strong>(Your Answer)</strong>' : ''}</div>`;
+      });
 
-      let flagTag = q.isFlagged ? '<span style="color: var(--warning); margin-left: 6px;">⚑ Flagged</span>' : '';
-
-      itemCard.innerHTML = `
+      card.innerHTML = `
         <div class="review-item-header">
-          <span class="review-q-num">Question ${originalIdx + 1} • ${q.difficulty}${flagTag}</span>
-          <span class="review-badge ${badgeClass}">${badgeText}</span>
+          <span>Question ${index + 1} • ${q.difficulty}</span>
+          <div>${statusBadge}${flaggedBadge}</div>
         </div>
-        <div class="review-q-text">${q.question}</div>
-        <div class="review-choices">
-          <div class="review-choice ${q.isCorrect ? 'was-correct' : (q.selectedAnswer ? 'was-user-wrong' : '')}">
-            <span>Your Answer:</span>
-            <strong>${q.selectedAnswer || '(No answer provided)'}</strong>
-          </div>
-          ${!q.isCorrect ? `
-          <div class="review-choice was-correct">
-            <span>Correct Answer:</span>
-            <strong>${q.correctAnswer}</strong>
-          </div>` : ''}
-        </div>
+        <p class="review-prompt">${q.question}</p>
+        <div class="review-options">${optionsHTML}</div>
         <div class="review-explanation">
           <strong>💡 Explanation:</strong> ${q.explanation}
         </div>
       `;
 
-      dom.reviewListContainer.appendChild(itemCard);
+      dom.reviewListContainer.appendChild(card);
     });
   }
 
   // ==========================================================================
-  // 14. Event Listeners & Binding
+  // 11. Event Listeners Initialization
   // ==========================================================================
   function initEventListeners() {
-    // Brand & Header Navigation
-    dom.brandHomeLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleGoHomeWithConfirm();
-    });
-
-    dom.headerHomeBtn.addEventListener("click", () => {
-      handleGoHomeWithConfirm();
-    });
-
-    // Sound Toggle
-    dom.soundToggleBtn.addEventListener("click", () => {
-      SoundEngine.enabled = !SoundEngine.enabled;
-      dom.soundToggleBtn.textContent = SoundEngine.enabled ? "🔊" : "🔇";
-      showToast(SoundEngine.enabled ? "Sound effects enabled" : "Sound effects muted");
-    });
-
-    // Gamification Modal Triggers
-    if (dom.headerXpBadge) dom.headerXpBadge.addEventListener("click", openAchievementsModal);
-    if (dom.headerStreakBadge) dom.headerStreakBadge.addEventListener("click", openAchievementsModal);
-    if (dom.headerAchievementsBtn) dom.headerAchievementsBtn.addEventListener("click", openAchievementsModal);
-    if (dom.hubViewAchievementsBtn) dom.hubViewAchievementsBtn.addEventListener("click", openAchievementsModal);
-    if (dom.achievementsModalCloseBtn) dom.achievementsModalCloseBtn.addEventListener("click", closeAchievementsModal);
-
-    // Category Select Sync with Quick Cards
-    dom.categorySelect.addEventListener("change", (e) => {
-      state.category = e.target.value;
-      dom.quickCategoryCards.forEach(card => {
-        card.classList.toggle("selected", card.dataset.cat === state.category);
-      });
-    });
-
-    dom.quickCategoryCards.forEach(card => {
+    // Subject Cards click -> Opens Subject Launcher Modal
+    dom.subjectCards.forEach(card => {
       card.addEventListener("click", () => {
-        const cat = card.dataset.cat;
-        state.category = cat;
-        dom.categorySelect.value = cat;
-        dom.quickCategoryCards.forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
+        const subjectName = card.getAttribute("data-subject");
+        openSubjectLauncherModal(subjectName);
+      });
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          const subjectName = card.getAttribute("data-subject");
+          openSubjectLauncherModal(subjectName);
+        }
       });
     });
 
-    // Difficulty Segmented Control
+    // Subject Launcher Modal buttons
+    dom.subjectModalCloseBtn.addEventListener("click", closeSubjectLauncherModal);
+    dom.modalCancelLaunchBtn.addEventListener("click", closeSubjectLauncherModal);
+    dom.modalStartQuizBtn.addEventListener("click", startQuiz);
+
+    // Difficulty buttons in modal
     dom.difficultyBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         dom.difficultyBtns.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        state.difficulty = btn.dataset.difficulty;
+        state.difficulty = btn.dataset.difficulty || "ALL";
       });
     });
 
-    // Timer Toggle Switch
-    dom.timerToggle.addEventListener("change", (e) => {
-      state.timerEnabled = e.target.checked;
-      dom.timerOptionsContainer.classList.toggle("visible", state.timerEnabled);
-    });
-
-    // Timer Mode Radios
-    dom.timerModeRadios.forEach(radio => {
-      radio.addEventListener("change", (e) => {
-        state.timerMode = e.target.value;
+    // Timer Radios in modal
+    dom.modalTimerModeRadios.forEach(label => {
+      label.addEventListener("click", () => {
+        dom.modalTimerModeRadios.forEach(l => l.classList.remove("selected"));
+        label.classList.add("selected");
+        const radio = label.querySelector("input[name='modalTimerMode']");
+        if (radio) {
+          radio.checked = true;
+          state.timerMode = radio.value;
+        }
       });
     });
 
-    // Whole Quiz Minutes dropdown
-    dom.wholeQuizMinutes.addEventListener("change", (e) => {
-      state.wholeQuizSecondsTotal = parseInt(e.target.value, 10) * 60;
+    // Global Navigation & Learning Insights Switchers
+    if (dom.navBtnPractice) {
+      dom.navBtnPractice.addEventListener("click", () => switchView("home"));
+    }
+    if (dom.navBtnInsights) {
+      dom.navBtnInsights.addEventListener("click", () => switchView("insights"));
+    }
+    if (dom.btnQuickInsights) {
+      dom.btnQuickInsights.addEventListener("click", () => switchView("insights"));
+    }
+    if (dom.railBtnPractice) {
+      dom.railBtnPractice.addEventListener("click", () => switchView("home"));
+    }
+    if (dom.railIconBtns) {
+      dom.railIconBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.id === "rail-btn-practice") return;
+          dom.railIconBtns.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          showToast(`Dock Filter: ${btn.getAttribute("title") || "Selected"}`, "📌");
+        });
+      });
+    }
+
+    // Insights Tabs
+    if (dom.insightsTabBtns) {
+      dom.insightsTabBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          dom.insightsTabBtns.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          showToast(`Viewing Insights: ${btn.textContent}`, "📊");
+        });
+      });
+    }
+
+    if (dom.insightsSearchBtn) {
+      dom.insightsSearchBtn.addEventListener("click", () => {
+        showToast("Search Insights: Filter active metrics and quests", "🔍");
+      });
+    }
+
+    // Interactive Bubble Nodes
+    document.querySelectorAll(".bubble-node").forEach(bubble => {
+      bubble.addEventListener("click", () => {
+        const title = bubble.getAttribute("title") || "Course activity node";
+        showToast(`Engagement: ${title}`, "🟣");
+      });
     });
 
-    // Per Question Seconds dropdown
-    dom.perQuestionSeconds.addEventListener("change", (e) => {
-      state.perQuestionSecondsTotal = parseInt(e.target.value, 10);
+    // Quick Action Buttons
+    dom.btnQuickAchievements.addEventListener("click", () => {
+      Gamification.renderAchievementsModal();
+      dom.achievementsModal.classList.add("open");
+    });
+    dom.achievementsModalCloseBtn.addEventListener("click", () => {
+      dom.achievementsModal.classList.remove("open");
     });
 
-    // Form Start Quiz
-    dom.quizConfigForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      startQuiz();
+    dom.btnQuickGoal.addEventListener("click", () => {
+      dom.goalModal.classList.add("open");
+    });
+    dom.goalModalCloseBtn.addEventListener("click", () => {
+      dom.goalModal.classList.remove("open");
     });
 
-    // Quiz Navigation Buttons
-    dom.nextBtn.addEventListener("click", handleNext);
-    dom.prevBtn.addEventListener("click", handlePrev);
-    dom.skipBtn.addEventListener("click", handleSkip);
+    // Goal options selection
+    dom.goalOptionsContainer.querySelectorAll(".goal-chip-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        dom.goalOptionsContainer.querySelectorAll(".goal-chip-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        Gamification.state.dailyGoal = parseInt(btn.dataset.goal, 10) || 1;
+        Gamification.save();
+        Gamification.updateDashboardUI();
+      });
+    });
+    dom.goalSaveBtn.addEventListener("click", () => {
+      dom.goalModal.classList.remove("open");
+      showToast(`Daily goal updated to ${Gamification.state.dailyGoal} lessons/day!`, "🎯");
+    });
+
+    dom.btnQuickPractice.addEventListener("click", () => {
+      openSubjectLauncherModal("Mathematics");
+    });
+
+    dom.btnQuickLeaderboard.addEventListener("click", () => {
+      Gamification.renderLeaderboardModal();
+      dom.leaderboardModal.classList.add("open");
+    });
+    dom.leaderboardModalCloseBtn.addEventListener("click", () => {
+      dom.leaderboardModal.classList.remove("open");
+    });
+
+    // Sound toggle
+    dom.soundToggleBtn.addEventListener("click", () => {
+      SoundEngine.enabled = !SoundEngine.enabled;
+      dom.soundToggleBtn.textContent = SoundEngine.enabled ? "🔊" : "🔇";
+      showToast(SoundEngine.enabled ? "Sound effects enabled" : "Sound effects muted", SoundEngine.enabled ? "🔊" : "🔇");
+    });
+
+    // Header badges clicks
+    dom.headerStreakBadge.addEventListener("click", () => {
+      showToast(`Current Daily Study Streak: ${Gamification.state.dailyStreak} day(s). Keep it going!`, "🔥");
+    });
+    dom.headerXpBadge.addEventListener("click", () => {
+      Gamification.renderAchievementsModal();
+      dom.achievementsModal.classList.add("open");
+    });
+
+    // Active Quiz Navigation buttons
+    dom.nextBtn.addEventListener("click", goToNextQuestion);
+    dom.prevBtn.addEventListener("click", goToPreviousQuestion);
+    dom.skipBtn.addEventListener("click", goToNextQuestion);
     dom.flagBtn.addEventListener("click", toggleFlagCurrentQuestion);
-    dom.submitQuizBtn.addEventListener("click", confirmSubmitQuiz);
+
+    dom.submitQuizBtn.addEventListener("click", () => {
+      const unanswered = state.sessionQuestions.filter(q => !q.isAnswered).length;
+      if (unanswered > 0) {
+        showConfirmModal(
+          "Submit Practice Quiz?",
+          `You have ${unanswered} unanswered question(s). Are you sure you want to finish now?`,
+          () => finishAndSubmitQuiz()
+        );
+      } else {
+        finishAndSubmitQuiz();
+      }
+    });
 
     dom.quitQuizBtn.addEventListener("click", () => {
-      showConfirmModal("Quit Quiz?", "Your current practice progress will not be saved. Are you sure you want to return to the home screen?", () => {
-        clearAllTimers();
-        closeConfirmModal();
-        switchView("home");
-      });
+      showConfirmModal(
+        "Exit Quiz?",
+        "Are you sure you want to quit this practice quiz? Current answers will be lost.",
+        () => {
+          clearAllTimers();
+          switchView("home");
+        }
+      );
     });
 
-    // Results Actions
-    dom.retakeQuizBtn.addEventListener("click", () => {
-      startQuiz();
-    });
-
-    dom.changeTopicBtn.addEventListener("click", () => {
-      switchView("home");
-    });
-
-    // Review Filters
-    dom.reviewFilterChips.forEach(chip => {
-      chip.addEventListener("click", () => {
-        renderReviewList(chip.dataset.filter);
-      });
-    });
-
-    // Confirm Modal Actions
-    dom.modalCancelBtn.addEventListener("click", closeConfirmModal);
+    // Modal Confirmation Handlers
     dom.modalConfirmBtn.addEventListener("click", () => {
       if (typeof state.pendingConfirmAction === "function") {
         state.pendingConfirmAction();
       }
+      closeConfirmModal();
     });
+    dom.modalCancelBtn.addEventListener("click", closeConfirmModal);
+    dom.modalCloseX.addEventListener("click", closeConfirmModal);
 
-    // Close Modals on Overlay Click
-    window.addEventListener("click", (e) => {
-      if (e.target === dom.achievementsModal) {
-        closeAchievementsModal();
-      }
-      if (e.target === dom.confirmModal) {
-        closeConfirmModal();
-      }
-    });
+    // Results screen actions
+    dom.retakeQuizBtn.addEventListener("click", startQuiz);
+    dom.changeTopicBtn.addEventListener("click", () => switchView("home"));
 
-    // Keyboard Shortcuts for Students
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        closeAchievementsModal();
-        closeConfirmModal();
-        return;
-      }
-
-      if (!dom.quizView.classList.contains("active") || dom.confirmModal.classList.contains("open") || dom.achievementsModal.classList.contains("open")) {
-        return;
-      }
-
-      const key = e.key.toUpperCase();
-      const optionMap = { "1": 0, "A": 0, "2": 1, "B": 1, "3": 2, "C": 2, "4": 3, "D": 3 };
-      if (key in optionMap) {
-        const optionButtons = dom.optionsContainer.querySelectorAll(".option-btn");
-        const idx = optionMap[key];
-        if (optionButtons[idx] && !optionButtons[idx].disabled) {
-          optionButtons[idx].click();
-        }
-      } else if (e.key === "ArrowRight") {
-        handleNext();
-      } else if (e.key === "ArrowLeft") {
-        handlePrev();
-      } else if (key === "F") {
-        toggleFlagCurrentQuestion();
-      }
-    });
-  }
-
-  function handleGoHomeWithConfirm() {
-    if (dom.quizView.classList.contains("active")) {
-      showConfirmModal("Leave Quiz?", "Are you sure you want to return to the home screen? Your current quiz session will be lost.", () => {
-        clearAllTimers();
-        closeConfirmModal();
-        switchView("home");
+    // Review Filters
+    dom.reviewFilterChips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        dom.reviewFilterChips.forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        renderReviewList(chip.dataset.filter);
       });
-    } else {
-      switchView("home");
-    }
+    });
+
+    // Backdrop click to close modals
+    [dom.subjectModal, dom.achievementsModal, dom.goalModal, dom.leaderboardModal, dom.confirmModal].forEach(modal => {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("open");
+        }
+      });
+    });
   }
 
   // ==========================================================================
-  // 15. Initialize App
+  // 12. App Bootstrapping
   // ==========================================================================
   function init() {
-    initEventListeners();
     Gamification.load();
-    if (window.QUESTION_BANK) {
-      console.log(`Loaded ${window.QUESTION_BANK.length} practice questions.`);
-    }
+    initEventListeners();
+    console.log("PrepQuiz Dashboard Initialized successfully.");
   }
 
   if (document.readyState === "loading") {
@@ -1405,5 +1482,4 @@
   } else {
     init();
   }
-
 })();
