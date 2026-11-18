@@ -308,6 +308,183 @@
         </div>
       </section>
 
+      <!-- ====================================================================
+           BOTTOM SHOWCASE: COURSE PROGRESS, STUDENT LEADERBOARD & ASSIGNMENTS
+           (MATCHING EXACT REFERENCE MOCKUP)
+           ==================================================================== -->
+      <section class="dashboard-bottom-trio" aria-label="Course Progress, Student Leaderboard, and Assignments">
+
+        <!-- 1. Course Progress Card -->
+        <div class="dashboard-trio-card course-progress-trio-card">
+          <div class="trio-card-header">
+            <h3 class="trio-card-title">Course Progress</h3>
+            <div class="trio-card-select-wrap">
+              <select class="trio-filter-select" aria-label="Course Progress Subject">
+                <option>UI & Visual Designer</option>
+                <option>Mathematics</option>
+                <option>Science</option>
+                <option>Computing</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Gauges Row -->
+          <div class="gauges-flex-row">
+            <!-- Ring 1: Attendance 68% -->
+            <div class="ring-gauge-item">
+              <div class="ring-svg-container">
+                <svg width="68" height="68" viewBox="0 0 68 68">
+                  <circle cx="34" cy="34" r="28" fill="none" stroke="#e8f3ed" stroke-width="5.5" />
+                  <circle cx="34" cy="34" r="28" fill="none" stroke="#7ecba6" stroke-width="5.5"
+                    stroke-dasharray="175.9" stroke-dashoffset="56.3" stroke-linecap="round"
+                    transform="rotate(-90 34 34)" />
+                </svg>
+                <span class="ring-gauge-text">68%</span>
+              </div>
+              <div class="ring-info-col">
+                <div class="ring-label-title">Attendance</div>
+                <div class="ring-label-sub">You've attended <strong>13</strong> of 19 classes</div>
+              </div>
+            </div>
+
+            <!-- Ring 2: Assignment 66% -->
+            <div class="ring-gauge-item">
+              <div class="ring-svg-container">
+                <svg width="68" height="68" viewBox="0 0 68 68">
+                  <circle cx="34" cy="34" r="28" fill="none" stroke="#f2edfa" stroke-width="5.5" />
+                  <circle cx="34" cy="34" r="28" fill="none" stroke="#b9a8dc" stroke-width="5.5"
+                    stroke-dasharray="175.9" stroke-dashoffset="59.8" stroke-linecap="round"
+                    transform="rotate(-90 34 34)" />
+                </svg>
+                <span class="ring-gauge-text">66%</span>
+              </div>
+              <div class="ring-info-col">
+                <div class="ring-label-title">Assignment</div>
+                <div class="ring-label-sub">You've done <strong>16</strong> of 24 tasks</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Next Class Box -->
+          <div class="next-class-box">
+            <div class="next-class-media" aria-hidden="true">🎨</div>
+            <div class="next-class-details">
+              <span class="next-class-kicker">Next Class</span>
+              <h4 class="next-class-name">Color Psychology</h4>
+              <p class="next-class-schedule">18 August, 2025 at 09:30 PM</p>
+            </div>
+            <button type="button" class="btn-join-class" id="btn-next-class-join">Join Class</button>
+          </div>
+        </div>
+
+        <!-- 2. Student Leaderboard Card (Center Showcase) -->
+        <div class="dashboard-trio-card leaderboard-trio-card" id="student-leaderboard-card">
+          <div class="trio-card-header">
+            <h3 class="trio-card-title">My Leaderboard</h3>
+            <div class="trio-card-select-wrap">
+              <select id="trio-lb-filter" class="trio-filter-select" aria-label="Leaderboard Subject Filter">
+                <option value="all">UI & Visual Designer</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="Computing">Computing</option>
+                <option value="Biology">Biology</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- My Position Banner -->
+          <div class="trio-section-heading">My Position</div>
+          <div class="lb-my-position-banner" id="lb-my-position-banner">
+            <div class="lb-user-left">
+              <div class="lb-user-avatar" id="lb-my-avatar">👨‍🎓</div>
+              <div class="lb-user-meta">
+                <div class="lb-user-name" id="lb-my-name">Smith</div>
+                <div class="lb-user-mark">Mark: <span id="lb-my-mark-val">96%</span></div>
+              </div>
+            </div>
+            <div class="lb-user-rank-badge" id="lb-my-rank-badge">1st</div>
+          </div>
+
+          <!-- Ranking List -->
+          <div class="trio-section-heading">Ranking List</div>
+          <div class="lb-ranking-list" id="lb-trio-ranking-list">
+            <!-- Dynamically populated student rows -->
+          </div>
+        </div>
+
+        <!-- 3. My Assignment Card -->
+        <div class="dashboard-trio-card assignment-trio-card">
+          <div class="trio-card-header">
+            <h3 class="trio-card-title">My Assignment</h3>
+            <div class="assignment-header-controls">
+              <button type="button" class="btn-pill-small">Today</button>
+              <div class="trio-card-select-wrap">
+                <select class="trio-filter-select" aria-label="Year">
+                  <option>2025</option>
+                  <option>2026</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calendar Header & Days Strip -->
+          <div class="cal-nav-row">
+            <button type="button" class="cal-arrow-btn" aria-label="Previous week">‹</button>
+            <span class="cal-month-title">Aug 2025</span>
+            <button type="button" class="cal-arrow-btn" aria-label="Next week">›</button>
+          </div>
+          <div class="cal-days-strip">
+            <div class="cal-day-cell"><span class="cal-day-label">Sun</span><span class="cal-day-number">11</span></div>
+            <div class="cal-day-cell"><span class="cal-day-label">Mon</span><span class="cal-day-number">12</span></div>
+            <div class="cal-day-cell"><span class="cal-day-label">Tue</span><span class="cal-day-number">13</span></div>
+            <div class="cal-day-cell active"><span class="cal-day-label">Wed</span><span class="cal-day-number">14</span></div>
+            <div class="cal-day-cell"><span class="cal-day-label">Thu</span><span class="cal-day-number">15</span></div>
+            <div class="cal-day-cell"><span class="cal-day-label">Fri</span><span class="cal-day-number">16</span></div>
+            <div class="cal-day-cell"><span class="cal-day-label">Sat</span><span class="cal-day-number">17</span></div>
+          </div>
+
+          <!-- Tasks List -->
+          <div class="assignment-tasks-list">
+            <div class="assignment-task-row">
+              <div class="task-thumb-box bg-warm" aria-hidden="true">📐</div>
+              <div class="task-info">
+                <div class="task-name">Design System</div>
+                <div class="task-sub">UI & Visual Designer</div>
+              </div>
+              <span class="task-status-pill done">Done</span>
+            </div>
+
+            <div class="assignment-task-row">
+              <div class="task-thumb-box bg-sage" aria-hidden="true">💡</div>
+              <div class="task-info">
+                <div class="task-name">LMS Case Study</div>
+                <div class="task-sub">UI & Visual Designer</div>
+              </div>
+              <span class="task-status-pill due">Due 2 hours</span>
+            </div>
+
+            <div class="assignment-task-row">
+              <div class="task-thumb-box bg-sky" aria-hidden="true">🔍</div>
+              <div class="task-info">
+                <div class="task-name">UX Research</div>
+                <div class="task-sub">UX</div>
+              </div>
+              <span class="task-time-label">09:00 PM</span>
+            </div>
+
+            <div class="assignment-task-row">
+              <div class="task-thumb-box bg-coral" aria-hidden="true">🎨</div>
+              <div class="task-info">
+                <div class="task-name">Color Thesis</div>
+                <div class="task-sub">UX</div>
+              </div>
+              <span class="task-time-label">11:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
       <!-- Quick Actions Container -->
       <section class="quick-actions-card">
         <div class="quick-actions-header">

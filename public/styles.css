@@ -465,6 +465,494 @@ body {
 }
 
 /* ==========================================================================
+   3B. DASHBOARD BOTTOM TRIO (COURSE PROGRESS, STUDENT LEADERBOARD, ASSIGNMENTS)
+   ========================================================================== */
+.dashboard-bottom-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 24px;
+}
+
+.dashboard-trio-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px;
+  border: 1.5px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.dashboard-trio-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.trio-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 8px;
+}
+
+.trio-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.trio-card-select-wrap {
+  position: relative;
+}
+
+.trio-filter-select {
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: #ffffff;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 150ms ease;
+}
+
+.trio-filter-select:hover,
+.trio-filter-select:focus {
+  border-color: #ea8e5c;
+}
+
+.trio-section-heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-top: 6px;
+}
+
+/* My Position Banner */
+.lb-my-position-banner {
+  background: linear-gradient(135deg, #fbe4cf 0%, #f6d4bc 100%);
+  border: 1px solid #ebd0bc;
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(230, 160, 110, 0.12);
+}
+
+.lb-user-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lb-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.lb-user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.lb-user-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2d3142;
+  line-height: 1.2;
+}
+
+.lb-user-mark {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #785a44;
+  margin-top: 1px;
+}
+
+.lb-user-rank-badge {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #532d1a;
+}
+
+/* Ranking List */
+.lb-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lb-rank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: background 150ms ease;
+}
+
+.lb-rank-row:hover {
+  background: #fbf6f1;
+}
+
+.lb-rank-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lb-peer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f7eee7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.lb-peer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.lb-peer-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.lb-peer-mark {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.lb-peer-rank {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* Course Progress Gauges */
+.gauges-flex-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.ring-gauge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.ring-svg-container {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-gauge-text {
+  position: absolute;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.ring-info-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ring-label-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ring-label-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+  line-height: 1.3;
+}
+
+.next-class-box {
+  background: #fdfaf7;
+  border: 1.5px solid var(--border-light);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.next-class-media {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #feebe0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.next-class-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.next-class-kicker {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #ea8e5c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+}
+
+.next-class-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.next-class-schedule {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.btn-join-class {
+  border: none;
+  background: #ea8e5c;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms ease;
+  flex-shrink: 0;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(234, 142, 92, 0.25);
+}
+
+.btn-join-class:hover {
+  background: #dc7e4b;
+  transform: translateY(-1px);
+}
+
+/* My Assignment Styles */
+.assignment-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-pill-small {
+  border: 1.5px solid var(--border-medium);
+  background: #ffffff;
+  border-radius: 9999px;
+  padding: 3px 9px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cal-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.cal-arrow-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.cal-month-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.cal-days-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 3px;
+  margin-bottom: 14px;
+}
+
+.cal-day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 3px;
+  border-radius: 9px;
+  flex: 1;
+  transition: all 160ms ease;
+}
+
+.cal-day-cell.active {
+  background: #fdf0e6;
+  border: 1px solid #f6d4bc;
+}
+
+.cal-day-cell.active .cal-day-number {
+  color: #ea8e5c;
+  font-weight: 800;
+}
+
+.cal-day-label {
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.cal-day-number {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.assignment-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.assignment-task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: #faf8f5;
+  border: 1px solid var(--border-light);
+}
+
+.task-thumb-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.task-thumb-box.bg-warm { background: #feebe0; }
+.task-thumb-box.bg-sage { background: #edf8f2; }
+.task-thumb-box.bg-sky { background: #eef6ff; }
+.task-thumb-box.bg-coral { background: #fff0f0; }
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.task-status-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.task-status-pill.done {
+  background: #edf8f2;
+  color: #52b788;
+}
+
+.task-status-pill.due {
+  background: #fef8ee;
+  color: #f6bd60;
+}
+
+.task-time-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments for bottom trio */
+@media (max-width: 1024px) {
+  .dashboard-bottom-trio {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-bottom-trio {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
    4. QUICK ACTIONS CARD
    ========================================================================== */
 .quick-actions-card {

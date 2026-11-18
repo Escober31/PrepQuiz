@@ -351,6 +351,105 @@
         const goalPct = Math.min(100, Math.round((this.state.todayLessonsCompleted / (this.state.dailyGoal || 1)) * 100));
         dom.goalProgressFill.style.width = `${goalPct}%`;
       }
+
+      // 6. Student Leaderboard on Dashboard
+      this.renderStudentLeaderboard();
+    },
+
+    renderStudentLeaderboard(filterSubject = "all") {
+      const container = document.getElementById("lb-trio-ranking-list");
+      if (!container) return;
+
+      const myMarkVal = document.getElementById("lb-my-mark-val");
+      const myRankBadge = document.getElementById("lb-my-rank-badge");
+
+      // Dynamic student database by subject or overall
+      const studentDatabase = {
+        all: [
+          { name: "Courtney Henry", mark: 95.5, points: 840, avatar: "👩‍🎓", rankText: "2nd" },
+          { name: "Floyd Miles", mark: 95.0, points: 780, avatar: "👨‍🎓", rankText: "3rd" },
+          { name: "Savannah Nguyen", mark: 94.0, points: 690, avatar: "👩‍🔬", rankText: "4th" },
+          { name: "Jerome Bell", mark: 93.0, points: 610, avatar: "👨‍💻", rankText: "5th" },
+          { name: "Wade Warren", mark: 91.5, points: 520, avatar: "🎨", rankText: "6th" },
+          { name: "Kristin Watson", mark: 89.0, points: 460, avatar: "👩‍🏫", rankText: "7th" }
+        ],
+        Mathematics: [
+          { name: "Marcus Chen", mark: 95.0, points: 810, avatar: "📐", rankText: "2nd" },
+          { name: "Elena Rostova", mark: 94.5, points: 740, avatar: "👩‍🎓", rankText: "3rd" },
+          { name: "Floyd Miles", mark: 92.0, points: 670, avatar: "👨‍🎓", rankText: "4th" },
+          { name: "Sophia Alvarez", mark: 89.5, points: 580, avatar: "🔬", rankText: "5th" }
+        ],
+        Science: [
+          { name: "Savannah Nguyen", mark: 96.0, points: 830, avatar: "👩‍🔬", rankText: "2nd" },
+          { name: "Sophia Alvarez", mark: 93.5, points: 750, avatar: "🔬", rankText: "3rd" },
+          { name: "Courtney Henry", mark: 91.0, points: 660, avatar: "👩‍🎓", rankText: "4th" },
+          { name: "Liam O'Connor", mark: 88.5, points: 570, avatar: "📚", rankText: "5th" }
+        ],
+        Computing: [
+          { name: "Jerome Bell", mark: 97.0, points: 860, avatar: "👨‍💻", rankText: "2nd" },
+          { name: "Marcus Chen", mark: 94.0, points: 790, avatar: "👨‍💻", rankText: "3rd" },
+          { name: "Elena Rostova", mark: 91.5, points: 690, avatar: "👩‍🎓", rankText: "4th" },
+          { name: "Courtney Henry", mark: 89.0, points: 590, avatar: "👩‍🎓", rankText: "5th" }
+        ],
+        Biology: [
+          { name: "Sophia Alvarez", mark: 95.0, points: 820, avatar: "🔬", rankText: "2nd" },
+          { name: "Savannah Nguyen", mark: 93.5, points: 740, avatar: "👩‍🔬", rankText: "3rd" },
+          { name: "Liam O'Connor", mark: 90.0, points: 650, avatar: "📚", rankText: "4th" },
+          { name: "Floyd Miles", mark: 88.0, points: 560, avatar: "👨‍🎓", rankText: "5th" }
+        ]
+      };
+
+      const peers = (studentDatabase[filterSubject] || studentDatabase.all).map(p => ({ ...p }));
+
+      // Calculate user mark (starting with 96% matching mockup, scales dynamically with points)
+      let userMark = 96.0;
+      if (this.state.totalPoints > 0) {
+        userMark = Math.min(99.5, +(96.0 + (this.state.totalPoints * 0.05)).toFixed(1));
+      }
+
+      const currentUser = {
+        name: "Smith",
+        mark: userMark,
+        points: this.state.totalPoints,
+        avatar: "👨‍🎓",
+        isUser: true
+      };
+
+      // Combine and rank by mark then points
+      const allRoster = [currentUser, ...peers];
+      allRoster.sort((a, b) => b.mark - a.mark || b.points - a.points);
+
+      allRoster.forEach((student, idx) => {
+        const rank = idx + 1;
+        student.calculatedRank = rank;
+        student.rankText = rank === 1 ? "1st" : rank === 2 ? "2nd" : rank === 3 ? "3rd" : `${rank}th`;
+      });
+
+      // Update My Position banner
+      if (myMarkVal) myMarkVal.textContent = `${currentUser.mark}%`;
+      if (myRankBadge) {
+        myRankBadge.textContent = currentUser.rankText;
+      }
+
+      // Populate Ranking List with top 4 peers
+      container.innerHTML = "";
+      const displayPeers = allRoster.filter(s => !s.isUser).slice(0, 4);
+
+      displayPeers.forEach(peer => {
+        const row = document.createElement("div");
+        row.className = "lb-rank-row";
+        row.innerHTML = `
+          <div class="lb-rank-left">
+            <div class="lb-peer-avatar">${peer.avatar}</div>
+            <div class="lb-peer-info">
+              <span class="lb-peer-name">${peer.name}</span>
+              <span class="lb-peer-mark">Mark: ${peer.mark}%</span>
+            </div>
+          </div>
+          <span class="lb-peer-rank">${peer.rankText}</span>
+        `;
+        container.appendChild(row);
+      });
     },
 
     renderAchievementsModal() {
@@ -1466,6 +1565,22 @@
         }
       });
     });
+
+    // Student Leaderboard Subject Filter Dropdown
+    const trioLbFilter = document.getElementById("trio-lb-filter");
+    if (trioLbFilter) {
+      trioLbFilter.addEventListener("change", (e) => {
+        Gamification.renderStudentLeaderboard(e.target.value);
+      });
+    }
+
+    // Join Next Class Button
+    const btnNextClassJoin = document.getElementById("btn-next-class-join");
+    if (btnNextClassJoin) {
+      btnNextClassJoin.addEventListener("click", () => {
+        openSubjectLauncher("Mathematics");
+      });
+    }
   }
 
   // ==========================================================================
